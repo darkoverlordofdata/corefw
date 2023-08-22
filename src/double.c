@@ -23,9 +23,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "double.h"
+#include "string.h"
 
 struct CFWDouble {
 	CFWObject obj;
@@ -72,6 +76,22 @@ copy(void *ptr)
 	return cfw_ref(ptr);
 }
 
+static CFWString*
+toString(void* ptr)
+{
+ 	CFWDouble *double_ = ptr;
+	
+   	int len = snprintf(NULL, 0, "%f", double_->value);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%f", double_->value);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
+
 double
 cfw_double_value(CFWDouble *double_)
 {
@@ -84,6 +104,7 @@ static CFWClass class = {
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFWClass *cfw_double = &class;

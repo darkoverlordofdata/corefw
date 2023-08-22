@@ -1,0 +1,104 @@
+The system is: FreeBSD - 13.1-RELEASE - amd64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/clang 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Clang, found in "/home/darko/Documents/GitHub/corefw/build/CMakeFiles/3.25.1/CompilerIdC/a.out"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH
+
+Run Build Command(s):/usr/local/bin/ninja cmTC_f51dd && [1/2] Building C object CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o
+FreeBSD clang version 13.0.0 (git@github.com:llvm/llvm-project.git llvmorg-13.0.0-0-gd7b669b3a303)
+Target: x86_64-unknown-freebsd13.1
+Thread model: posix
+InstalledDir: /usr/bin
+ (in-process)
+ "/usr/bin/clang" -cc1 -triple x86_64-unknown-freebsd13.1 -emit-obj -mrelax-all --mrelax-relocations -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -v -fcoverage-compilation-dir=/usr/home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH -resource-dir /usr/lib/clang/13.0.0 -dependency-file CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -sys-header-deps -fdebug-compilation-dir=/usr/home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -x c /usr/local/share/cmake/Modules/CMakeCCompilerABI.c
+clang -cc1 version 13.0.0 based upon LLVM 13.0.0 default target x86_64-unknown-freebsd13.1
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/clang/13.0.0/include
+ /usr/include
+End of search list.
+[2/2] Linking C executable cmTC_f51dd
+FreeBSD clang version 13.0.0 (git@github.com:llvm/llvm-project.git llvmorg-13.0.0-0-gd7b669b3a303)
+Target: x86_64-unknown-freebsd13.1
+Thread model: posix
+InstalledDir: /usr/bin
+ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_f51dd /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/lib/clang/13.0.0/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/lib/clang/13.0.0/include] ==> [/usr/lib/clang/13.0.0/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/lib/clang/13.0.0/include;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.lld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/local/bin/ninja cmTC_f51dd && [1/2] Building C object CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o]
+  ignore line: [FreeBSD clang version 13.0.0 (git@github.com:llvm/llvm-project.git llvmorg-13.0.0-0-gd7b669b3a303)]
+  ignore line: [Target: x86_64-unknown-freebsd13.1]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [ (in-process)]
+  ignore line: [ "/usr/bin/clang" -cc1 -triple x86_64-unknown-freebsd13.1 -emit-obj -mrelax-all --mrelax-relocations -disable-free -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fno-rounding-math -mconstructor-aliases -munwind-tables -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -v -fcoverage-compilation-dir=/usr/home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH -resource-dir /usr/lib/clang/13.0.0 -dependency-file CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -sys-header-deps -fdebug-compilation-dir=/usr/home/darko/Documents/GitHub/corefw/build/CMakeFiles/CMakeScratch/TryCompile-XUjenH -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -x c /usr/local/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 13.0.0 based upon LLVM 13.0.0 default target x86_64-unknown-freebsd13.1]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/lib/clang/13.0.0/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [[2/2] Linking C executable cmTC_f51dd]
+  ignore line: [FreeBSD clang version 13.0.0 (git@github.com:llvm/llvm-project.git llvmorg-13.0.0-0-gd7b669b3a303)]
+  ignore line: [Target: x86_64-unknown-freebsd13.1]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  link line: [ "/usr/bin/ld" --eh-frame-hdr -dynamic-linker /libexec/ld-elf.so.1 --hash-style=both --enable-new-dtags -o cmTC_f51dd /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbegin.o -L/usr/lib CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/crtend.o /usr/lib/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/libexec/ld-elf.so.1] ==> ignore
+    arg [--hash-style=both] ==> ignore
+    arg [--enable-new-dtags] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_f51dd] ==> ignore
+    arg [/usr/lib/crt1.o] ==> obj [/usr/lib/crt1.o]
+    arg [/usr/lib/crti.o] ==> obj [/usr/lib/crti.o]
+    arg [/usr/lib/crtbegin.o] ==> obj [/usr/lib/crtbegin.o]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_f51dd.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/lib/crtend.o] ==> obj [/usr/lib/crtend.o]
+    arg [/usr/lib/crtn.o] ==> obj [/usr/lib/crtn.o]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit objs: [/usr/lib/crt1.o;/usr/lib/crti.o;/usr/lib/crtbegin.o;/usr/lib/crtend.o;/usr/lib/crtn.o]
+  implicit dirs: [/usr/lib]
+  implicit fwks: []
+
+

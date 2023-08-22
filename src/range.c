@@ -26,8 +26,13 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "range.h"
+#include "string.h"
+
 
 cfw_range_t cfw_range_all = { 0, SIZE_MAX };
 

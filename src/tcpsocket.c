@@ -27,6 +27,8 @@
 #define _C99_SOURCE
 #define _POSIX_SOURCE
 
+#include <stdlib.h>
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
@@ -39,6 +41,14 @@
 
 #include "stream.h"
 #include "tcpsocket.h"
+
+#ifndef sprintf
+int snprintf(char *buf, size_t size, const char *fmt, ...);
+#endif
+
+#ifndef memset
+void *memset(void *str, int c, size_t n);
+#endif
 
 struct CFWTCPSocket {
 	CFWStream stream;
@@ -114,6 +124,22 @@ dtor(void *ptr)
 	cfw_stream->dtor(ptr);
 }
 
+static CFWString*
+toString(void *ptr)
+{
+	CFWObject *this = ptr;
+	uint32_t h = this->cls->hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 bool
 cfw_tcpsocket_connect(CFWTCPSocket *sock, const char *host, uint16_t port)
 {
@@ -154,6 +180,7 @@ static CFWClass class = {
 	.name = "CFWTCPSocket",
 	.size = sizeof(CFWTCPSocket),
 	.ctor = ctor,
-	.dtor = dtor
+	.dtor = dtor,
+	.toString = toString
 };
 CFWClass *cfw_tcpsocket = &class;

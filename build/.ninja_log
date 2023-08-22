@@ -1,0 +1,18 @@
+# ninja log v5
+7	310	1692044020258101000	CMakeFiles/corefw.dir/src/double.c.o	81d9cdfc3bd132c2
+690	990	1692044020949176000	CMakeFiles/app.dir/tests/tests.c.o	fe56adc7748c50e5
+314	485	1692044020440402000	CMakeFiles/corefw.dir/src/object.c.o	27fd4d8858fa1d41
+294	467	1692044020413725000	CMakeFiles/corefw.dir/src/int.c.o	a2126327f195dad0
+7	259	1692044020217968000	CMakeFiles/corefw.dir/src/class.c.o	eff3ca6411e0e295
+8	509	1692044020465512000	CMakeFiles/corefw.dir/src/file.c.o	67553d3ee44f19ae
+6	305	1692044020259226000	CMakeFiles/corefw.dir/src/bool.c.o	92917cac931f276d
+6	393	1692044020350203000	CMakeFiles/corefw.dir/src/array.c.o	bed120558d87ae50
+6	407	1692044020338801000	CMakeFiles/corefw.dir/src/box.c.o	420848c1f9aa8ef
+309	608	1692044020531970000	CMakeFiles/corefw.dir/src/map.c.o	5108abf94be70e2b
+893	1032	1692044020975066000	libcorefw.so	f3ffcaaed801a1c8
+1034	1112	1692044021061056000	app	de9617cc59d1cffc
+410	701	1692044020598193000	CMakeFiles/corefw.dir/src/refpool.c.o	fad5b55b8aab6488
+407	701	1692044020570203000	CMakeFiles/corefw.dir/src/range.c.o	705af0b61b0926e0
+479	782	1692044020739317000	CMakeFiles/corefw.dir/src/stream.c.o	aaafe9db5d775bf8
+487	824	1692044020737152000	CMakeFiles/corefw.dir/src/string.c.o	b24ff4ae7d7b1b0b
+513	888	1692044020847396000	CMakeFiles/corefw.dir/src/tcpsocket.c.o	316c42681cddf936

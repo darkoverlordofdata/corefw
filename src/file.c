@@ -26,6 +26,10 @@
 
 #include <string.h>
 #include <limits.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
+
 
 #include <sys/stat.h>
 
@@ -34,6 +38,7 @@
 
 #include "stream.h"
 #include "file.h"
+#include "string.h"
 
 #ifndef O_BINARY
 # define O_BINARY 0
@@ -53,6 +58,8 @@
 #endif
 
 #define DEFAULT_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
+
+int strcmp( const char *lhs, const char *rhs );
 
 struct CFWFile {
 	CFWStream stream;
@@ -167,11 +174,27 @@ dtor(void *ptr)
 	cfw_stream->dtor(ptr);
 }
 
+static CFWString*
+toString(void *ptr)
+{
+	uint32_t h = cfw_hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWFile: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 static CFWClass class = {
 	.name = "CFWFile",
 	.size = sizeof(CFWFile),
 	.ctor = ctor,
-	.dtor = dtor
+	.dtor = dtor,
+	.toString = toString
 };
 CFWClass *cfw_file = &class;
 

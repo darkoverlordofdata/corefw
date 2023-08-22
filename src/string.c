@@ -33,6 +33,10 @@
 #include "string.h"
 #include "hash.h"
 
+size_t strlen(const char *str);
+void * memcpy ( void * destination, const void * source, size_t num );
+int memcmp ( const void * ptr1, const void * ptr2, size_t num );
+
 struct CFWString {
 	CFWObject obj;
 	char *data;
@@ -165,6 +169,12 @@ copy(void *ptr)
 	memcpy(new->data, str->data, str->len + 1);
 
 	return new;
+}
+
+static CFWString*
+toString(void *ptr)
+{
+	return copy(ptr);
 }
 
 char*
@@ -349,6 +359,8 @@ static CFWClass class = {
 	.dtor = dtor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFWClass *cfw_string = &class;
+

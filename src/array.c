@@ -26,10 +26,13 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "array.h"
 #include "hash.h"
+#include "string.h"
 
 struct CFWArray {
 	CFWObject obj;
@@ -126,6 +129,21 @@ copy(void *ptr)
 		new->data[i] = cfw_ref(array->data[i]);
 
 	return new;
+}
+
+static CFWString*
+toString(void *ptr)
+{
+	uint32_t h = hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
 }
 
 void*

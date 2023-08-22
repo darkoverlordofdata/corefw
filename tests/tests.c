@@ -24,14 +24,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-
 #include "object.h"
-#include "refpool.h"
-#include "string.h"
-#include "int.h"
-#include "array.h"
-#include "map.h"
+#include <stdio.h>
+#include <corefw.h>
+
+#define CFW_ENDOFLIST NULL
+#define CFW_REMOVE NULL
+
+static inline void* cfw_create_bool(int value) {
+	return cfw_create(cfw_bool, value);
+}
+static inline void* cfw_create_double(double value) {
+	return cfw_create(cfw_double, value);
+}
+static inline void* cfw_create_int(int64_t value) {
+	return cfw_create(cfw_int, value);
+}
+static inline void* cfw_create_string(const char* value) {
+	return cfw_create(cfw_string, value);
+}
+
 
 static void
 print_map(CFWMap *map)
@@ -42,13 +54,10 @@ print_map(CFWMap *map)
 
 	fputs("{\n", stdout);
 
+	CFWString *str;
 	while (iter.key != NULL) {
-		printf("\t%s = ", cfw_string_c(iter.key));
-
-		if (cfw_is(iter.obj, cfw_string))
-			printf("%s\n", cfw_string_c(iter.obj));
-		else if (cfw_is(iter.obj, cfw_int))
-			printf("%jd\n", cfw_int_value(iter.obj));
+		str = cfw_toString(iter.obj);
+		printf("\t%s = %s\n", cfw_string_c(iter.key), cfw_string_c(str));
 
 		cfw_map_iter_next(&iter);
 	}
@@ -57,56 +66,43 @@ print_map(CFWMap *map)
 }
 
 int
-main()
+main(int argc, char *argv[])
 {
-	CFWRefPool *pool;
-	CFWArray *array;
-	CFWString *str, *str2;
-	CFWMap *map;
-	size_t i;
+	CFWRefPool *pool = cfw_new(cfw_refpool);
 
-	pool = cfw_new(cfw_refpool);
+	CFWArray *array = cfw_create(cfw_array,
+	    cfw_create_string("Hallo"),
+	    cfw_create_string("Welt"),
+	    cfw_create_string("!"),
+		CFW_ENDOFLIST);
 
-	array = cfw_create(cfw_array,
-	    cfw_create(cfw_string, "Hallo"),
-	    cfw_create(cfw_string, " Welt"),
-	    cfw_create(cfw_string, "!"), (void*)NULL);
+	CFWString *str = cfw_new(cfw_string, (void*)NULL);
 
-	str = cfw_new(cfw_string, (void*)NULL);
-
-	for (i = 0; i < cfw_array_size(array); i++)
+	for (int i = 0; i < cfw_array_size(array); i++) {
 		cfw_string_append(str, cfw_array_get(array, i));
-
-	cfw_unref(pool);
+	}
 
 	puts(cfw_string_c(str));
 
-	pool = cfw_new(cfw_refpool);
-	str2 = cfw_create(cfw_string, "ll");
+	CFWString *str2 = cfw_create_string("ll");
 	printf("%zd\n", cfw_string_find(str, str2, cfw_range_all));
 
-	cfw_unref(pool);
 	cfw_unref(str);
 
-	pool = cfw_new(cfw_refpool);
-
-	map = cfw_create(cfw_map,
-	    cfw_create(cfw_string, "Hallo"),
-	    cfw_create(cfw_string, "Welt!"),
-	    cfw_create(cfw_string, "Test"),
-	    cfw_create(cfw_string, "success!"),
-	    cfw_create(cfw_string, "int"),
-	    cfw_create(cfw_int, INTMAX_C(1234)), NULL);
+	CFWMap *map = cfw_create(cfw_map,
+	    cfw_create_string("Hallo"),		cfw_create_string("Welt!"),
+	    cfw_create_string("int"), 		cfw_create_int(1234), 
+	    cfw_create_string("double"),	cfw_create_double(3.1415), 
+	    cfw_create_string("Test"),		cfw_create_string("success!"),
+		CFW_ENDOFLIST);
 
 	print_map(map);
 
-	cfw_map_set(map,
-	    cfw_create(cfw_string, "Hallo"),
-	    cfw_create(cfw_string, "Test"));
+	cfw_map_set(map, cfw_create_string("Hallo"), cfw_create_string("Test"));
 
 	print_map(map);
 
-	cfw_map_set(map, cfw_create(cfw_string, "Hallo"), NULL);
+	cfw_map_set(map, cfw_create_string("Hallo"), CFW_REMOVE);
 	print_map(map);
 
 	cfw_unref(pool);

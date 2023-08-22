@@ -45,5 +45,6 @@ extern bool cfw_is(void*, CFWClass*);
 extern bool cfw_equal(void*, void*);
 extern uint32_t cfw_hash(void*);
 extern void* cfw_copy(void*);
+extern CFWString* cfw_toString(void *ptr);
 
 #endif

@@ -32,6 +32,8 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+typedef struct CFWString CFWString;
+
 typedef struct CFWClass {
 	const char *name;
 	size_t size;
@@ -40,6 +42,7 @@ typedef struct CFWClass {
 	bool (*equal)(void*, void*);
 	uint32_t (*hash)(void*);
 	void* (*copy)(void*);
+	CFWString* (*toString)(void*);
 } CFWClass;
 
 extern const char* cfw_class_name(CFWClass*);

@@ -23,9 +23,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "int.h"
+#include "refpool.h"
+#include "string.h"
 
 struct CFWInt {
 	CFWObject obj;
@@ -71,6 +76,22 @@ copy(void *ptr)
 	return cfw_ref(ptr);
 }
 
+
+static CFWString*
+toString(void* ptr)
+{
+ 	CFWInt *integer = ptr;
+	
+   	int len = snprintf(NULL, 0, "%jd", integer->value);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%jd", integer->value);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 intmax_t
 cfw_int_value(CFWInt *integer)
 {
@@ -83,6 +104,9 @@ static CFWClass class = {
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFWClass *cfw_int = &class;
+
+

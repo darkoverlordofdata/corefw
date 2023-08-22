@@ -23,9 +23,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "bool.h"
+#include "string.h"
 
 struct CFWBool {
 	CFWObject obj;
@@ -71,6 +75,21 @@ copy(void *ptr)
 	return cfw_ref(ptr);
 }
 
+static CFWString*
+toString(void* ptr)
+{
+ 	CFWBool *boolean = ptr;
+	
+   	int len = snprintf(NULL, 0, "%s", boolean->value ? "true": "false");
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%s", boolean->value ? "true": "false");
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 bool
 cfw_bool_value(CFWBool *boolean)
 {
@@ -83,6 +102,7 @@ static CFWClass class = {
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFWClass *cfw_bool = &class;

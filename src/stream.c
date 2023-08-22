@@ -25,11 +25,16 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "stream.h"
 
 #define BUFFER_SIZE 4096
+
+size_t strlen(const char *str);
+void * memcpy ( void * destination, const void * source, size_t num );
 
 static bool
 ctor(void *ptr, va_list args)
@@ -47,6 +52,22 @@ static void
 dtor(void *ptr)
 {
 	cfw_stream_close(ptr);
+}
+
+static CFWString*
+toString(void *ptr)
+{
+	CFWObject *this = ptr;
+	uint32_t h = this->cls->hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
 }
 
 ssize_t
@@ -316,6 +337,7 @@ static CFWClass class = {
 	.name = "CFWStream",
 	.size = sizeof(CFWStream),
 	.ctor = ctor,
-	.dtor = dtor
+	.dtor = dtor,
+	.toString = toString
 };
 CFWClass *cfw_stream = &class;

@@ -1,0 +1,14 @@
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/corefw.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/app.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/edit_cache.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/rebuild_cache.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/list_install_components.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/install.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/install/local.dir
+/home/darko/Documents/GitHub/corefw/build/CMakeFiles/install/strip.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/edit_cache.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/rebuild_cache.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/list_install_components.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/install.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/install/local.dir
+/home/darko/Documents/GitHub/corefw/build/src/CMakeFiles/install/strip.dir

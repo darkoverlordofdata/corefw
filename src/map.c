@@ -25,6 +25,8 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "map.h"
@@ -129,6 +131,7 @@ copy(void *ptr)
 	if ((new = cfw_new(cfw_map, (void*)NULL)) == NULL)
 		return NULL;
 
+	// NOLINTNEXTLINE
 	if ((new->data = malloc(sizeof(*new->data) * map->size)) == NULL)
 		return NULL;
 	new->size = map->size;
@@ -152,6 +155,21 @@ copy(void *ptr)
 	return new;
 }
 
+static CFWString*
+toString(void *ptr)
+{
+	uint32_t h = cfw_hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWMap: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 bool
 resize(CFWMap *map, uint32_t items)
 {
@@ -172,6 +190,7 @@ resize(CFWMap *map, uint32_t items)
 	if (nsize == 0)
 		return false;
 
+	// NOLINTNEXTLINE
 	if ((ndata = malloc(nsize * sizeof(*ndata))) == NULL)
 		return false;
 
@@ -278,6 +297,7 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 		return false;
 
 	if (map->data == NULL) {
+		// NOLINTNEXTLINE
 		if ((map->data = malloc(sizeof(*map->data))) == NULL)
 			return false;
 
@@ -426,6 +446,7 @@ static CFWClass class = {
 	.dtor = dtor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFWClass *cfw_map = &class;

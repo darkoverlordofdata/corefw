@@ -25,9 +25,12 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "box.h"
+#include "string.h"
 
 struct CFWBox {
 	CFWObject obj;
@@ -57,6 +60,22 @@ dtor(void *ptr)
 		free(box->ptr);
 }
 
+static CFWString*
+toString(void *ptr)
+{
+	uint32_t h = cfw_hash(ptr);
+
+   	int len = snprintf(NULL, 0, "Box: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
+
 void*
 cfw_box_ptr(CFWBox *box)
 {
@@ -73,6 +92,7 @@ static CFWClass class = {
 	.name = "CFWBox",
 	.size = sizeof(CFWBox),
 	.ctor = ctor,
-	.dtor = dtor
+	.dtor = dtor,
+	.toString = toString
 };
 CFWClass *cfw_box = &class;

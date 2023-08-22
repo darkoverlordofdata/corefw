@@ -26,9 +26,11 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "refpool.h"
+#include "string.h"
 
 void*
 cfw_new(CFWClass *class, ...)
@@ -193,6 +195,30 @@ cfw_copy(void *ptr)
 		return obj->cls->copy(obj);
 
 	return NULL;
+}
+
+CFWString*
+cfw_toString(void *ptr)
+{
+	CFWObject *obj = ptr;
+
+	if (obj == NULL)
+		return NULL;
+
+	if (obj->cls->toString != NULL)
+		return obj->cls->toString(obj);
+
+
+	uint32_t h = cfw_hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWObject: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
 }
 
 static CFWClass class = {

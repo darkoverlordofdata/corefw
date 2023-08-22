@@ -26,10 +26,12 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include "object.h"
 #include "refpool.h"
 #include "array.h"
+#include "string.h"
 
 struct CFWRefPool {
 	CFWObject obj;
@@ -81,6 +83,22 @@ dtor(void *ptr)
 		top->next = NULL;
 }
 
+static CFWString*
+toString(void *ptr)
+{
+	CFWObject *this = ptr;
+	uint32_t h = this->cls->hash(ptr);
+
+   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%u", h);
+    CFWString *str = cfw_create(cfw_string, s);
+    free(s);
+    return str;
+	
+}
+
 bool
 cfw_refpool_add(void *ptr)
 {
@@ -107,6 +125,7 @@ static CFWClass class = {
 	.name = "CFWRefPool",
 	.size = sizeof(CFWRefPool),
 	.ctor = ctor,
-	.dtor = dtor
+	.dtor = dtor,
+	.toString = toString
 };
 CFWClass *cfw_refpool = &class;
