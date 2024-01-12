@@ -18,4 +18,8 @@ add_executable(app)
 target_sources(app PRIVATE "tests/tests.c")
 target_link_libraries(app PRIVATE corefw)
 
-install(TARGETS corefw FILE_SET HEADERS)
+install(TARGETS corefw 
+        LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/corefw"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include" )
