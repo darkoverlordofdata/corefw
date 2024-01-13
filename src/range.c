@@ -34,12 +34,12 @@
 #include "string.h"
 
 
-cfw_range_t cfw_range_all = { 0, SIZE_MAX };
+CFRange_t CFRangeAll = { 0, SIZE_MAX };
 
-cfw_range_t
-cfw_range(size_t start, size_t length)
+CFRange_t
+CFRange(size_t start, size_t length)
 {
-	cfw_range_t range = { start, length };
+	CFRange_t range = { start, length };
 
 	return range;
 }

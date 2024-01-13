@@ -34,12 +34,12 @@
 #include "string.h"
 
 static struct bucket {
-	CFWObject *key, *obj;
+	CFObjectRef key, obj;
 	uint32_t hash;
 } deleted = { NULL, NULL, 0 };
 
-struct CFWMap {
-	CFWObject obj;
+struct __CFMap {
+	struct __CFObject obj;
 	struct bucket **data;
 	uint32_t size;
 	size_t items;
@@ -48,7 +48,7 @@ struct CFWMap {
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWMap *map = ptr;
+	CFMapRef map = ptr;
 	void *key;
 
 	map->data = NULL;
@@ -56,7 +56,7 @@ ctor(void *ptr, va_list args)
 	map->items = 0;
 
 	while ((key = va_arg(args, void*)) != NULL)
-		if (!cfw_map_set(map, key, va_arg(args, void*)))
+		if (!CFMapSet(map, key, va_arg(args, void*)))
 			return false;
 
 	return true;
@@ -65,13 +65,13 @@ ctor(void *ptr, va_list args)
 static void
 dtor(void *ptr)
 {
-	CFWMap *map = ptr;
+	CFMapRef map = ptr;
 	uint32_t i;
 
 	for (i = 0; i < map->size; i++) {
 		if (map->data[i] != NULL && map->data[i] != &deleted) {
-			cfw_unref(map->data[i]->key);
-			cfw_unref(map->data[i]->obj);
+			CFUnref(map->data[i]->key);
+			CFUnref(map->data[i]->obj);
 			free(map->data[i]);
 		}
 	}
@@ -83,11 +83,11 @@ dtor(void *ptr)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWMap *map1, *map2;
+	CFObjectRef obj2 = ptr2;
+	CFMapRef map1, map2;
 	uint32_t i;
 
-	if (obj2->cls != cfw_map)
+	if (obj2->cls != CFMap)
 		return false;
 
 	map1 = ptr1;
@@ -98,7 +98,7 @@ equal(void *ptr1, void *ptr2)
 
 	for (i = 0; i < map1->size; i++)
 		if (map1->data[i] != NULL && map1->data[i] != &deleted &&
-		    !cfw_equal(cfw_map_get(map2, map1->data[i]->key),
+		    !CFEqual(CFMapGet(map2, map1->data[i]->key),
 		    map1->data[i]->obj))
 			return false;
 
@@ -108,13 +108,13 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWMap *map = ptr;
+	CFMapRef map = ptr;
 	uint32_t i, hash = 0;
 
 	for (i = 0; i < map->size; i++) {
 		if (map->data[i] != NULL && map->data[i] != &deleted) {
 			hash += map->data[i]->hash;
-			hash += cfw_hash(map->data[i]->obj);
+			hash += CFHash(map->data[i]->obj);
 		}
 	}
 
@@ -124,11 +124,11 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	CFWMap *map = ptr;
-	CFWMap *new;
+	CFMapRef map = ptr;
+	CFMapRef new;
 	uint32_t i;
 
-	if ((new = cfw_new(cfw_map, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFMap, (void*)NULL)) == NULL)
 		return NULL;
 
 	// NOLINTNEXTLINE
@@ -143,8 +143,8 @@ copy(void *ptr)
 			if ((bucket = malloc(sizeof(*bucket))) == NULL)
 				return NULL;
 
-			bucket->key = cfw_ref(map->data[i]->key);
-			bucket->obj = cfw_ref(map->data[i]->obj);
+			bucket->key = CFRef(map->data[i]->key);
+			bucket->obj = CFRef(map->data[i]->obj);
 			bucket->hash = map->data[i]->hash;
 
 			new->data[i] = bucket;
@@ -155,23 +155,23 @@ copy(void *ptr)
 	return new;
 }
 
-static CFWString*
+static CFStringRef
 toString(void *ptr)
 {
-	uint32_t h = cfw_hash(ptr);
+	uint32_t h = CFHash(ptr);
 
-   	int len = snprintf(NULL, 0, "CFWMap: %u", h);
+   	int len = snprintf(NULL, 0, "CFMap: %u", h);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%u", h);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
 bool
-resize(CFWMap *map, uint32_t items)
+resize(CFMapRef map, uint32_t items)
 {
 	size_t fullness = items * 4 / map->size;
 	struct bucket **ndata;
@@ -230,20 +230,20 @@ resize(CFWMap *map, uint32_t items)
 }
 
 size_t
-cfw_map_size(CFWMap *map)
+CFMapSize(CFMapRef map)
 {
 	return map->items;
 }
 
 void*
-cfw_map_get(CFWMap *map, void *key)
+CFMapGet(CFMapRef map, void *key)
 {
 	uint32_t i, hash, last;
 
 	if (key == NULL)
 		return NULL;
 
-	hash = cfw_hash(key);
+	hash = CFHash(key);
 	last = map->size;
 
 	for (i = hash & (map->size - 1);
@@ -251,7 +251,7 @@ cfw_map_get(CFWMap *map, void *key)
 		if (map->data[i] == &deleted)
 			continue;
 
-		if (cfw_equal(map->data[i]->key, key))
+		if (CFEqual(map->data[i]->key, key))
 			return map->data[i]->obj;
 	}
 
@@ -265,7 +265,7 @@ cfw_map_get(CFWMap *map, void *key)
 		if (map->data[i] == &deleted)
 			continue;
 
-		if (cfw_equal(map->data[i]->key, key))
+		if (CFEqual(map->data[i]->key, key))
 			return map->data[i]->obj;
 	}
 
@@ -273,23 +273,23 @@ cfw_map_get(CFWMap *map, void *key)
 }
 
 void*
-cfw_map_get_c(CFWMap *map, const char *key)
+CFMapGetC(CFMapRef map, const char *key)
 {
-	CFWString *str;
+	CFStringRef str;
 	void *ret;
 
-	if ((str = cfw_new(cfw_string, key)) == NULL)
+	if ((str = CFNew(CFString, key)) == NULL)
 		return NULL;
 
-	ret = cfw_map_get(map, str);
+	ret = CFMapGet(map, str);
 
-	cfw_unref(str);
+	CFUnref(str);
 
 	return ret;
 }
 
 bool
-cfw_map_set(CFWMap *map, void *key, void *obj)
+CFMapSet(CFMapRef map, void *key, void *obj)
 {
 	uint32_t i, hash, last;
 
@@ -306,7 +306,7 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 		map->items = 0;
 	}
 
-	hash = cfw_hash(key);
+	hash = CFHash(key);
 	last = map->size;
 
 	for (i = hash & (map->size - 1);
@@ -314,7 +314,7 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 		if (map->data[i] == &deleted)
 			continue;
 
-		if (cfw_equal(map->data[i]->key, key))
+		if (CFEqual(map->data[i]->key, key))
 			break;
 	}
 
@@ -326,14 +326,14 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 			if (map->data[i] == &deleted)
 				continue;
 
-			if (cfw_equal(map->data[i]->key, key))
+			if (CFEqual(map->data[i]->key, key))
 				break;
 		}
 	}
 
 	/* Key not in dictionary */
 	if (i >= last || map->data[i] == NULL || map->data[i] == &deleted ||
-	    !cfw_equal(map->data[i]->key, key)) {
+	    !CFEqual(map->data[i]->key, key)) {
 		struct bucket *bucket;
 
 		if (obj == NULL)
@@ -361,13 +361,13 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 		if ((bucket = malloc(sizeof(*bucket))) == NULL)
 			return false;
 
-		if ((bucket->key = cfw_copy(key)) == NULL) {
+		if ((bucket->key = CFCopy(key)) == NULL) {
 			free(bucket);
 			return false;
 		}
 
-		bucket->obj = cfw_ref(obj);
-		bucket->hash = cfw_hash(key);
+		bucket->obj = CFRef(obj);
+		bucket->hash = CFHash(key);
 
 		map->data[i] = bucket;
 		map->items++;
@@ -377,11 +377,11 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 
 	if (obj != NULL) {
 		void *old = map->data[i]->obj;
-		map->data[i]->obj = cfw_ref(obj);
-		cfw_unref(old);
+		map->data[i]->obj = CFRef(obj);
+		CFUnref(old);
 	} else {
-		cfw_unref(map->data[i]->key);
-		cfw_unref(map->data[i]->obj);
+		CFUnref(map->data[i]->key);
+		CFUnref(map->data[i]->obj);
 
 		free(map->data[i]);
 		map->data[i] = &deleted;
@@ -396,34 +396,34 @@ cfw_map_set(CFWMap *map, void *key, void *obj)
 }
 
 bool
-cfw_map_set_c(CFWMap *map, const char *key, void *obj)
+CFMapSetC(CFMapRef map, const char *key, void *obj)
 {
-	CFWString *str;
+	CFStringRef str;
 	bool ret;
 
-	if ((str = cfw_new(cfw_string, key)) == NULL)
+	if ((str = CFNew(CFString, key)) == NULL)
 		return false;
 
-	ret = cfw_map_set(map, str, obj);
+	ret = CFMapSet(map, str, obj);
 
-	cfw_unref(str);
+	CFUnref(str);
 
 	return ret;
 }
 
 void
-cfw_map_iter(CFWMap *map, cfw_map_iter_t *iter)
+CFMapIter(CFMapRef map, CFMapIter_t *iter)
 {
 	iter->_map = map;
 	iter->_pos = 0;
 
-	cfw_map_iter_next(iter);
+	CFMapIterNext(iter);
 }
 
 void
-cfw_map_iter_next(cfw_map_iter_t *iter)
+CFMapIterNext(CFMapIter_t *iter)
 {
-	CFWMap *map = iter->_map;
+	CFMapRef map = iter->_map;
 
 	for (; iter->_pos < map->size &&
 	    (map->data[iter->_pos] == NULL ||
@@ -439,9 +439,9 @@ cfw_map_iter_next(cfw_map_iter_t *iter)
 	}
 }
 
-static CFWClass class = {
-	.name = "CFWMap",
-	.size = sizeof(CFWMap),
+static struct __CFClass class = {
+	.name = "CFMap",
+	.size = sizeof(struct __CFMap),
 	.ctor = ctor,
 	.dtor = dtor,
 	.equal = equal,
@@ -449,4 +449,4 @@ static CFWClass class = {
 	.copy = copy,
 	.toString = toString
 };
-CFWClass *cfw_map = &class;
+CFClassRef CFMap = &class;

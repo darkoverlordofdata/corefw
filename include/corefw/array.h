@@ -29,17 +29,17 @@
 
 #include "class.h"
 
-typedef struct CFWArray CFWArray;
-extern CFWClass *cfw_array;
-extern size_t cfw_array_size(CFWArray*);
-extern void* cfw_array_get(CFWArray*, size_t);
-extern bool cfw_array_set(CFWArray*, size_t, void*);
-extern bool cfw_array_push(CFWArray*, void*);
-extern void* cfw_array_last(CFWArray*);
-extern bool cfw_array_pop(CFWArray*);
-extern bool cfw_array_contains(CFWArray*, void*);
-extern bool cfw_array_contains_ptr(CFWArray*, void*);
-extern size_t cfw_array_find(CFWArray*, void*);
-extern size_t cfw_array_find_ptr(CFWArray*, void*);
+typedef struct __CFArray* CFArrayRef;
+extern CFClassRef CFArray;
+extern size_t CFArraySize(CFArrayRef);
+extern void* CFArrayGet(CFArrayRef, size_t);
+extern bool CFArraySet(CFArrayRef, size_t, void*);
+extern bool CFArrayPush(CFArrayRef, void*);
+extern void* CFArrayLast(CFArrayRef);
+extern bool CFArrayPop(CFArrayRef);
+extern bool CFArrayContains(CFArrayRef, void*);
+extern bool CFArrayContainsPtr(CFArrayRef, void*);
+extern size_t CFArrayFind(CFArrayRef, void*);
+extern size_t CFArrayFindPtr(CFArrayRef, void*);
 
 #endif

@@ -29,8 +29,10 @@
 
 #include "class.h"
 
-typedef struct CFWRefPool CFWRefPool;
-extern CFWClass *cfw_refpool;
-extern bool cfw_refpool_add(void*);
+typedef struct __CFRefPool* CFRefPoolRef;
+extern CFClassRef CFRefPool;
+extern bool CFRefpoolAdd(void*);
+
+
 
 #endif

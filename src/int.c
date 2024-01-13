@@ -32,15 +32,15 @@
 #include "refpool.h"
 #include "string.h"
 
-struct CFWInt {
-	CFWObject obj;
+struct __CFInt {
+	struct __CFObject obj;
 	intmax_t value;
 };
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWInt *integer = ptr;
+	CFIntRef integer = ptr;
 
 	integer->value = va_arg(args, intmax_t);
 
@@ -50,10 +50,10 @@ ctor(void *ptr, va_list args)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWInt *int1, *int2;
+	CFObjectRef obj2 = ptr2;
+	CFIntRef int1, int2;
 
-	if (obj2->cls != cfw_int)
+	if (obj2->cls != CFInt)
 		return false;
 
 	int1 = ptr1;
@@ -65,7 +65,7 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWInt *integer = ptr;
+	CFIntRef integer = ptr;
 
 	return (uint32_t)integer->value;
 }
@@ -73,40 +73,40 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	return cfw_ref(ptr);
+	return CFRef(ptr);
 }
 
 
-static CFWString*
+static CFStringRef
 toString(void* ptr)
 {
- 	CFWInt *integer = ptr;
+ 	CFIntRef integer = ptr;
 	
    	int len = snprintf(NULL, 0, "%jd", integer->value);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%jd", integer->value);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
 intmax_t
-cfw_int_value(CFWInt *integer)
+CFInt_value(CFIntRef integer)
 {
 	return integer->value;
 }
 
-static CFWClass class = {
-	.name = "CFWInt",
-	.size = sizeof(CFWInt),
+static struct __CFClass class = {
+	.name = "CFInt",
+	.size = sizeof(struct __CFInt),
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
 	.copy = copy,
 	.toString = toString
 };
-CFWClass *cfw_int = &class;
+CFClassRef CFInt = &class;
 
 

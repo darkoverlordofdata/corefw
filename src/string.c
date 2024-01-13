@@ -37,14 +37,14 @@ size_t strlen(const char *str);
 void * memcpy ( void * destination, const void * source, size_t num );
 int memcmp ( const void * ptr1, const void * ptr2, size_t num );
 
-struct CFWString {
-	CFWObject obj;
+struct __CFString {
+	struct __CFObject obj;
 	char *data;
 	size_t len;
 };
 
 size_t
-cfw_strnlen(const char *s, size_t max)
+CFStrnlen(const char *s, size_t max)
 {
 	size_t i = 0;
 
@@ -55,7 +55,7 @@ cfw_strnlen(const char *s, size_t max)
 }
 
 char*
-cfw_strdup(const char *s)
+CFStrdup(const char *s)
 {
 	char *copy;
 	size_t len;
@@ -71,12 +71,12 @@ cfw_strdup(const char *s)
 }
 
 char*
-cfw_strndup(const char *s, size_t max)
+CFStrndup(const char *s, size_t max)
 {
 	char *copy;
 	size_t len;
 
-	len = cfw_strnlen(s, max);
+	len = CFStrnlen(s, max);
 
 	if ((copy = malloc(len + 1)) == NULL)
 		return NULL;
@@ -90,12 +90,12 @@ cfw_strndup(const char *s, size_t max)
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWString *str = ptr;
+	CFStringRef str = ptr;
 	const char *cstr = va_arg(args, const char*);
 
 	if (cstr != NULL) {
 		str->data = NULL;
-		if ((str->data = cfw_strdup(cstr)) == NULL)
+		if ((str->data = CFStrdup(cstr)) == NULL)
 			return false;
 
 		str->len = strlen(cstr);
@@ -110,7 +110,7 @@ ctor(void *ptr, va_list args)
 static void
 dtor(void *ptr)
 {
-	CFWString *str = ptr;
+	CFStringRef str = ptr;
 
 	if (str->data != NULL)
 		free(str->data);
@@ -119,10 +119,10 @@ dtor(void *ptr)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWString *str1, *str2;
+	CFObjectRef obj2 = ptr2;
+	CFStringRef str1, str2;
 
-	if (obj2->cls != cfw_string)
+	if (obj2->cls != CFString)
 		return false;
 
 	str1 = ptr1;
@@ -137,16 +137,16 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWString *str = ptr;
+	CFStringRef str = ptr;
 	size_t i;
 	uint32_t hash;
 
-	CFW_HASH_INIT(hash);
+	CF_HASH_INIT(hash);
 
 	for (i = 0; i < str->len; i++)
-		CFW_HASH_ADD(hash, str->data[i]);
+		CF_HASH_ADD(hash, str->data[i]);
 
-	CFW_HASH_FINALIZE(hash);
+	CF_HASH_FINALIZE(hash);
 
 	return hash;
 }
@@ -154,14 +154,14 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	CFWString *str = ptr;
-	CFWString *new;
+	CFStringRef str = ptr;
+	CFStringRef new;
 
-	if ((new = cfw_new(cfw_string, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFString, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(str->len + 1)) == NULL) {
-		cfw_unref(new);
+		CFUnref(new);
 		return NULL;
 	}
 	new->len = str->len;
@@ -171,32 +171,32 @@ copy(void *ptr)
 	return new;
 }
 
-static CFWString*
+static CFStringRef
 toString(void *ptr)
 {
 	return copy(ptr);
 }
 
 char*
-cfw_string_c(CFWString *str)
+CFStringC(CFStringRef str)
 {
 	return str->data;
 }
 
 size_t
-cfw_string_length(CFWString *string)
+CFStringLength(CFStringRef string)
 {
 	return string->len;
 }
 
 bool
-cfw_string_set(CFWString *str, const char *cstr)
+CFStringSet(CFStringRef str, const char *cstr)
 {
 	char *copy;
 	size_t len;
 
 	if (str != NULL) {
-		if ((copy = cfw_strdup(cstr)) == NULL)
+		if ((copy = CFStrdup(cstr)) == NULL)
 			return false;
 
 		len = strlen(copy);
@@ -215,7 +215,7 @@ cfw_string_set(CFWString *str, const char *cstr)
 }
 
 void
-cfw_string_set_nocopy(CFWString *str, char *cstr, size_t len)
+CFStringSetNocopy(CFStringRef str, char *cstr, size_t len)
 {
 	if (str->data != NULL)
 		free(str->data);
@@ -225,7 +225,7 @@ cfw_string_set_nocopy(CFWString *str, char *cstr, size_t len)
 }
 
 bool
-cfw_string_append(CFWString *str, CFWString *append)
+CFStringAppend(CFStringRef str, CFStringRef append)
 {
 	char *new;
 
@@ -245,7 +245,7 @@ cfw_string_append(CFWString *str, CFWString *append)
 }
 
 bool
-cfw_string_append_c(CFWString *str, const char *append)
+CFStringAppendC(CFStringRef str, const char *append)
 {
 	char *new;
 	size_t append_len;
@@ -268,7 +268,7 @@ cfw_string_append_c(CFWString *str, const char *append)
 }
 
 bool
-cfw_string_has_prefix(CFWString *str, CFWString *prefix)
+CFStringHasPrefix(CFStringRef str, CFStringRef prefix)
 {
 	if (prefix->len > str->len)
 		return false;
@@ -277,7 +277,7 @@ cfw_string_has_prefix(CFWString *str, CFWString *prefix)
 }
 
 bool
-cfw_string_has_prefix_c(CFWString *str, const char *prefix)
+CFStringHasPrefixC(CFStringRef str, const char *prefix)
 {
 	size_t prefix_len = strlen(prefix);
 
@@ -288,7 +288,7 @@ cfw_string_has_prefix_c(CFWString *str, const char *prefix)
 }
 
 bool
-cfw_string_has_suffix(CFWString *str, CFWString *suffix)
+CFStringHasSuffix(CFStringRef str, CFStringRef suffix)
 {
 	if (suffix->len > str->len)
 		return false;
@@ -297,7 +297,7 @@ cfw_string_has_suffix(CFWString *str, CFWString *suffix)
 }
 
 bool
-cfw_string_has_suffix_c(CFWString *str, const char *suffix)
+CFStringHasSuffixC(CFStringRef str, const char *suffix)
 {
 	size_t suffix_len = strlen(suffix);
 
@@ -308,7 +308,7 @@ cfw_string_has_suffix_c(CFWString *str, const char *suffix)
 }
 
 size_t
-cfw_string_find(CFWString *str, CFWString *substr, cfw_range_t range)
+CFStringFind(CFStringRef str, CFStringRef substr, CFRange_t range)
 {
 	size_t i;
 
@@ -330,7 +330,7 @@ cfw_string_find(CFWString *str, CFWString *substr, cfw_range_t range)
 }
 
 size_t
-cfw_string_find_c(CFWString *str, const char *substr, cfw_range_t range)
+CFStringFindC(CFStringRef str, const char *substr, CFRange_t range)
 {
 	size_t substr_len = strlen(substr);
 	size_t i;
@@ -352,9 +352,9 @@ cfw_string_find_c(CFWString *str, const char *substr, cfw_range_t range)
 	return SIZE_MAX;
 }
 
-static CFWClass class = {
-	.name = "CFWString",
-	.size = sizeof(CFWString),
+static struct __CFClass class = {
+	.name = "CFString",
+	.size = sizeof(struct __CFString),
 	.ctor = ctor,
 	.dtor = dtor,
 	.equal = equal,
@@ -362,5 +362,5 @@ static CFWClass class = {
 	.copy = copy,
 	.toString = toString
 };
-CFWClass *cfw_string = &class;
+CFClassRef CFString = &class;
 

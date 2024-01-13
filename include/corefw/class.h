@@ -32,9 +32,10 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-typedef struct CFWString CFWString;
+typedef struct __CFString *CFStringRef;
 
-typedef struct CFWClass {
+typedef struct __CFClass* CFClassRef;
+struct __CFClass {
 	const char *name;
 	size_t size;
 	bool (*ctor)(void*, va_list);
@@ -42,9 +43,8 @@ typedef struct CFWClass {
 	bool (*equal)(void*, void*);
 	uint32_t (*hash)(void*);
 	void* (*copy)(void*);
-	CFWString* (*toString)(void*);
-} CFWClass;
-
-extern const char* cfw_class_name(CFWClass*);
+	CFStringRef (*toString)(void*);
+};
+extern const char* CFClassName(CFClassRef);
 
 #endif

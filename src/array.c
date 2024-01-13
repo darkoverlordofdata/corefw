@@ -34,8 +34,8 @@
 #include "hash.h"
 #include "string.h"
 
-struct CFWArray {
-	CFWObject obj;
+struct __CFArray {
+	struct __CFObject obj;
 	void **data;
 	size_t size;
 };
@@ -43,14 +43,14 @@ struct CFWArray {
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWArray *array = ptr;
+	CFArrayRef array = ptr;
 	void *obj;
 
 	array->data = NULL;
 	array->size = 0;
 
 	while ((obj = va_arg(args, void*)) != NULL)
-		if (!cfw_array_push(array, obj))
+		if (!CFArrayPush(array, obj))
 			return false;
 
 	return true;
@@ -59,11 +59,11 @@ ctor(void *ptr, va_list args)
 static void
 dtor(void *ptr)
 {
-	CFWArray *array = ptr;
+	CFArrayRef array = ptr;
 	size_t i;
 
 	for (i = 0; i < array->size; i++)
-		cfw_unref(array->data[i]);
+		CFUnref(array->data[i]);
 
 	if (array->data != NULL)
 		free(array->data);
@@ -72,11 +72,11 @@ dtor(void *ptr)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWArray *array1, *array2;
+	CFObjectRef obj2 = ptr2;
+	CFArrayRef array1, array2;
 	size_t i;
 
-	if (obj2->cls != cfw_array)
+	if (obj2->cls != CFArray)
 		return false;
 
 	array1 = ptr1;
@@ -86,7 +86,7 @@ equal(void *ptr1, void *ptr2)
 		return false;
 
 	for (i = 0; i < array1->size; i++)
-		if (cfw_equal(array1->data[i], array2->data[i]))
+		if (CFEqual(array1->data[i], array2->data[i]))
 			return false;
 
 	return true;
@@ -95,16 +95,16 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWArray *array = ptr;
+	CFArrayRef array = ptr;
 	size_t i;
 	uint32_t hash;
 
-	CFW_HASH_INIT(hash);
+	CF_HASH_INIT(hash);
 
 	for (i = 0; i < array->size; i++)
-		CFW_HASH_ADD_HASH(hash, cfw_hash(array->data[i]));
+		CF_HASH_ADD_HASH(hash, CFHash(array->data[i]));
 
-	CFW_HASH_FINALIZE(hash);
+	CF_HASH_FINALIZE(hash);
 
 	return hash;
 }
@@ -112,42 +112,42 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	CFWArray *array = ptr;
-	CFWArray *new;
+	CFArrayRef array = ptr;
+	CFArrayRef new;
 	size_t i;
 
-	if ((new = cfw_new(cfw_array, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFArray, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(sizeof(void*) * array->size)) == NULL) {
-		cfw_unref(new);
+		CFUnref(new);
 		return NULL;
 	}
 	new->size = array->size;
 
 	for (i = 0; i < array->size; i++)
-		new->data[i] = cfw_ref(array->data[i]);
+		new->data[i] = CFRef(array->data[i]);
 
 	return new;
 }
 
-static CFWString*
+static CFStringRef
 toString(void *ptr)
 {
 	uint32_t h = hash(ptr);
 
-   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+   	int len = snprintf(NULL, 0, "CFArray: %u", h);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%u", h);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
 void*
-cfw_array_get(CFWArray *array, size_t index)
+CFArrayGet(CFArrayRef array, size_t index)
 {
 	if (index >= array->size)
 		return NULL;
@@ -156,32 +156,32 @@ cfw_array_get(CFWArray *array, size_t index)
 }
 
 size_t
-cfw_array_size(CFWArray *array)
+CFArraySize(CFArrayRef array)
 {
 	return array->size;
 }
 
 bool
-cfw_array_set(CFWArray *array, size_t index, void *ptr)
+CFArraySet(CFArrayRef array, size_t index, void *ptr)
 {
-	CFWObject *obj = ptr;
-	CFWObject *old;
+	CFObjectRef obj = ptr;
+	CFObjectRef old;
 
 	if (index >= array->size)
 		return false;
 
-	cfw_ref(obj);
+	CFRef(obj);
 	old = array->data[index];
 	array->data[index] = obj;
-	cfw_unref(old);
+	CFUnref(old);
 
 	return true;
 }
 
 bool
-cfw_array_push(CFWArray *array, void *ptr)
+CFArrayPush(CFArrayRef array, void *ptr)
 {
-	CFWObject *obj = ptr;
+	CFObjectRef obj = ptr;
 	void **new;
 
 	if (array->data == NULL)
@@ -192,7 +192,7 @@ cfw_array_push(CFWArray *array, void *ptr)
 	if (new == NULL)
 		return false;
 
-	new[array->size] = cfw_ref(obj);
+	new[array->size] = CFRef(obj);
 
 	array->data = new;
 	array->size++;
@@ -201,7 +201,7 @@ cfw_array_push(CFWArray *array, void *ptr)
 }
 
 void*
-cfw_array_last(CFWArray *array)
+CFArrayLast(CFArrayRef array)
 {
 	if (array->size == 0)
 		return NULL;
@@ -210,7 +210,7 @@ cfw_array_last(CFWArray *array)
 }
 
 bool
-cfw_array_pop(CFWArray *array)
+CFArrayPop(CFArrayRef array)
 {
 	void **new;
 	void *last;
@@ -219,7 +219,7 @@ cfw_array_pop(CFWArray *array)
 		return NULL;
 
 	if (array->size == 1) {
-		cfw_unref(array->data[0]);
+		CFUnref(array->data[0]);
 		free(array->data);
 		array->data = NULL;
 		array->size = 0;
@@ -232,7 +232,7 @@ cfw_array_pop(CFWArray *array)
 	if (new == NULL)
 		return false;
 
-	cfw_unref(last);
+	CFUnref(last);
 
 	array->data = new;
 	array->size--;
@@ -241,19 +241,19 @@ cfw_array_pop(CFWArray *array)
 }
 
 bool
-cfw_array_contains(CFWArray *array, void *ptr)
+CFArrayContains(CFArrayRef array, void *ptr)
 {
 	size_t i;
 
 	for (i = 0; i < array->size; i++)
-		if (cfw_equal(array->data[i], ptr))
+		if (CFEqual(array->data[i], ptr))
 			return true;
 
 	return false;
 }
 
 bool
-cfw_array_contains_ptr(CFWArray *array, void *ptr)
+CFArrayContainsPtr(CFArrayRef array, void *ptr)
 {
 	size_t i;
 
@@ -265,19 +265,19 @@ cfw_array_contains_ptr(CFWArray *array, void *ptr)
 }
 
 size_t
-cfw_array_find(CFWArray *array, void *ptr)
+CFArrayFind(CFArrayRef array, void *ptr)
 {
 	size_t i;
 
 	for (i = 0; i < array->size; i++)
-		if (cfw_equal(array->data[i], ptr))
+		if (CFEqual(array->data[i], ptr))
 			return i;
 
 	return SIZE_MAX;
 }
 
 size_t
-cfw_array_find_ptr(CFWArray *array, void *ptr)
+CFArrayFindPtr(CFArrayRef array, void *ptr)
 {
 	size_t i;
 
@@ -288,13 +288,13 @@ cfw_array_find_ptr(CFWArray *array, void *ptr)
 	return SIZE_MAX;
 }
 
-static CFWClass class = {
-	.name = "CFWArray",
-	.size = sizeof(CFWArray),
+static struct __CFClass class = {
+	.name = "CFArray",
+	.size = sizeof(struct __CFArray),
 	.ctor = ctor,
 	.dtor = dtor,
 	.equal = equal,
 	.hash = hash,
 	.copy = copy
 };
-CFWClass *cfw_array = &class;
+CFClassRef CFArray = &class;

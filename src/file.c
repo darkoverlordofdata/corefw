@@ -61,10 +61,10 @@
 
 int strcmp( const char *lhs, const char *rhs );
 
-struct CFWFile {
-	CFWStream stream;
+struct __CFFile {
+	struct __CFStream stream;
 	int fd;
-	bool at_end;
+	bool eof;
 };
 
 static int
@@ -99,21 +99,21 @@ parse_mode(const char *mode)
 }
 
 static ssize_t
-file_read(void *ptr, void *buf, size_t len)
+FileRead(void *ptr, void *buf, size_t len)
 {
-	CFWFile *file = ptr;
+	CFFileRef file = ptr;
 	ssize_t ret;
 
 	if ((ret = read(file->fd, buf, len)) == 0)
-		file->at_end = true;
+		file->eof = true;
 
 	return ret;
 }
 
 static bool
-file_write(void *ptr, const void *buf, size_t len)
+FileWrite(void *ptr, const void *buf, size_t len)
 {
-	CFWFile *file = ptr;
+	CFFileRef file = ptr;
 	ssize_t ret;
 
 	if ((ret = write(file->fd, buf, len)) < len)
@@ -123,39 +123,39 @@ file_write(void *ptr, const void *buf, size_t len)
 }
 
 static bool
-file_at_end(void *ptr)
+FileAtEnd(void *ptr)
 {
-	CFWFile *file = ptr;
+	CFFileRef file = ptr;
 
-	return file->at_end;
+	return file->eof;
 }
 
 static void
-file_close(void *ptr)
+FileClose(void *ptr)
 {
-	CFWFile *file = ptr;
+	CFFileRef file = ptr;
 
 	close(file->fd);
 }
 
-static struct cfw_stream_ops stream_ops = {
-	.read = file_read,
-	.write = file_write,
-	.at_end = file_at_end,
-	.close = file_close
+static struct CFStreamOps stream_ops = {
+	.read = FileRead,
+	.write = FileWrite,
+	.at_end = FileAtEnd,
+	.close = FileClose
 };
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWFile *file = ptr;
+	CFFileRef file = ptr;
 	const char *path = va_arg(args, const char*);
 	const char *mode = va_arg(args, const char*);
 	int flags;
 
 	/* Make sure we have a valid file in case we error out */
-	cfw_stream->ctor(ptr, args);
-	file->at_end = false;
+	CFStream->ctor(ptr, args);
+	file->eof = false;
 
 	if ((flags = parse_mode(mode)) == -1)
 		return false;
@@ -171,34 +171,34 @@ ctor(void *ptr, va_list args)
 static void
 dtor(void *ptr)
 {
-	cfw_stream->dtor(ptr);
+	CFStream->dtor(ptr);
 }
 
-static CFWString*
+static CFStringRef
 toString(void *ptr)
 {
-	uint32_t h = cfw_hash(ptr);
+	uint32_t h = CFHash(ptr);
 
-   	int len = snprintf(NULL, 0, "CFWFile: %u", h);
+   	int len = snprintf(NULL, 0, "CFFile: %u", h);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%u", h);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
-static CFWClass class = {
-	.name = "CFWFile",
-	.size = sizeof(CFWFile),
+static struct __CFClass class = {
+	.name = "CFFile",
+	.size = sizeof(struct __CFFile),
 	.ctor = ctor,
 	.dtor = dtor,
 	.toString = toString
 };
-CFWClass *cfw_file = &class;
+CFClassRef CFFile = &class;
 
-static CFWFile cfw_stdin_ = {
+static struct __CFFile _StdIn = {
 	.stream = {
 		.obj = {
 			.cls = &class,
@@ -207,9 +207,9 @@ static CFWFile cfw_stdin_ = {
 		.ops = &stream_ops
 	},
 	.fd = 0,
-	.at_end = false
+	.eof = false
 };
-static CFWFile cfw_stdout_ = {
+static struct __CFFile _StdOut = {
 	.stream = {
 		.obj = {
 			.cls = &class,
@@ -218,9 +218,9 @@ static CFWFile cfw_stdout_ = {
 		.ops = &stream_ops
 	},
 	.fd = 1,
-	.at_end = false
+	.eof = false
 };
-static CFWFile cfw_stderr_ = {
+static struct __CFFile _StdErr = {
 	.stream = {
 		.obj = {
 			.cls = &class,
@@ -229,8 +229,8 @@ static CFWFile cfw_stderr_ = {
 		.ops = &stream_ops
 	},
 	.fd = 2,
-	.at_end = false
+	.eof = false
 };
-CFWFile *cfw_stdin = &cfw_stdin_;
-CFWFile *cfw_stdout = &cfw_stdout_;
-CFWFile *cfw_stderr = &cfw_stderr_;
+CFFileRef CFStdIn = &_StdIn;
+CFFileRef CFStdOut = &_StdOut;
+CFFileRef CFStdErr = &_StdErr;

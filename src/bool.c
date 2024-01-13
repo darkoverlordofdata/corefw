@@ -31,15 +31,15 @@
 #include "bool.h"
 #include "string.h"
 
-struct CFWBool {
-	CFWObject obj;
+struct __CFBool {
+	struct __CFObject obj;
 	bool value;
 };
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWBool *boolean = ptr;
+	CFBoolRef boolean = ptr;
 
 	boolean->value = va_arg(args, int);
 
@@ -49,10 +49,10 @@ ctor(void *ptr, va_list args)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWBool *boolean1, *boolean2;
+	CFObjectRef obj2 = ptr2;
+	CFBoolRef boolean1, boolean2;
 
-	if (obj2->cls != cfw_bool)
+	if (obj2->cls != CFBool)
 		return false;
 
 	boolean1 = ptr1;
@@ -64,7 +64,7 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWBool *boolean = ptr;
+	CFBoolRef boolean = ptr;
 
 	return (uint32_t)boolean->value;
 }
@@ -72,37 +72,37 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	return cfw_ref(ptr);
+	return CFRef(ptr);
 }
 
-static CFWString*
+static CFStringRef
 toString(void* ptr)
 {
- 	CFWBool *boolean = ptr;
+ 	CFBoolRef boolean = ptr;
 	
    	int len = snprintf(NULL, 0, "%s", boolean->value ? "true": "false");
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%s", boolean->value ? "true": "false");
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
 bool
-cfw_bool_value(CFWBool *boolean)
+CFBoolValue(CFBoolRef boolean)
 {
 	return boolean->value;
 }
 
-static CFWClass class = {
-	.name = "CFWBool",
-	.size = sizeof(CFWBool),
+static struct __CFClass class = {
+	.name = "CFBool",
+	.size = sizeof(struct __CFBool),
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
 	.copy = copy,
 	.toString = toString
 };
-CFWClass *cfw_bool = &class;
+CFClassRef CFBool = &class;

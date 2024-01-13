@@ -27,26 +27,26 @@
 #ifndef __COREFW_HASH_H__
 #define __COREFW_HASH_H__
 
-#define CFW_HASH_INIT(hash) hash = 0
-#define CFW_HASH_ADD(hash, byte)	\
+#define CF_HASH_INIT(hash) hash = 0
+#define CF_HASH_ADD(hash, byte)	\
 	{				\
 		hash += (uint8_t)byte;	\
 		hash += (hash << 10);	\
 		hash ^= (hash >> 6);	\
 	}
-#define CFW_HASH_FINALIZE(hash)		\
+#define CF_HASH_FINALIZE(hash)		\
 	{				\
 		hash += (hash << 3);	\
 		hash ^= (hash >> 11);	\
 		hash += (hash << 15);	\
 	}
-#define CFW_HASH_ADD_HASH(hash, other_)				\
+#define CF_HASH_ADD_HASH(hash, other_)				\
 	{							\
 		uint32_t other = other_;			\
-		CFW_HASH_ADD(hash, (other >> 24) & 0xFF);	\
-		CFW_HASH_ADD(hash, (other >> 16) & 0xFF);	\
-		CFW_HASH_ADD(hash, (other >>  8) & 0xFF);	\
-		CFW_HASH_ADD(hash, other & 0xFF);		\
+		CF_HASH_ADD(hash, (other >> 24) & 0xFF);	\
+		CF_HASH_ADD(hash, (other >> 16) & 0xFF);	\
+		CF_HASH_ADD(hash, (other >>  8) & 0xFF);	\
+		CF_HASH_ADD(hash, other & 0xFF);		\
 	}
 
 #endif

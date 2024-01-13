@@ -30,22 +30,25 @@
 #include "class.h"
 #include "range.h"
 
-typedef struct CFWString CFWString;
-extern CFWClass *cfw_string;
-extern size_t cfw_strnlen(const char*, size_t);
-extern char* cfw_strdup(const char*);
-extern char* cfw_strndup(const char*, size_t);
-extern char* cfw_string_c(CFWString*);
-extern size_t cfw_string_length(CFWString*);
-extern bool cfw_string_set(CFWString*, const char*);
-extern void cfw_string_set_nocopy(CFWString*, char*, size_t);
-extern bool cfw_string_append(CFWString*, CFWString*);
-extern bool cfw_string_append_c(CFWString*, const char*);
-extern bool cfw_string_has_prefix(CFWString*, CFWString*);
-extern bool cfw_string_has_prefix_c(CFWString*, const char*);
-extern bool cfw_string_has_suffix(CFWString*, CFWString*);
-extern bool cfw_string_has_suffix_c(CFWString*, const char*);
-extern size_t cfw_string_find(CFWString*, CFWString*, cfw_range_t);
-extern size_t cfw_string_find_c(CFWString*, const char*, cfw_range_t);
+typedef struct __CFRefPool* CFRefPoolRef;
+
+typedef struct __CFString* CFStringRef;
+
+extern CFClassRef CFString;
+extern size_t CFStrnlen(const char*, size_t);
+extern char* CFStrdup(const char*);
+extern char* CFStrndup(const char*, size_t);
+extern char* CFStringC(CFStringRef);
+extern size_t CFStringLength(CFStringRef);
+extern bool CFStringSet(CFStringRef, const char*);
+extern void CFStringSetNocopy(CFStringRef, char*, size_t);
+extern bool CFStringAppend(CFStringRef, CFStringRef);
+extern bool CFStringAppendC(CFStringRef, const char*);
+extern bool CFStringHasPrefix(CFStringRef, CFStringRef);
+extern bool CFStringHasPrefixC(CFStringRef, const char*);
+extern bool CFStringHasSuffix(CFStringRef, CFStringRef);
+extern bool CFStringHasSuffixC(CFStringRef, const char*);
+extern size_t CFStringFind(CFStringRef, CFStringRef, CFRange_t);
+extern size_t CFStringFindC(CFStringRef, const char*, CFRange_t);
 
 #endif

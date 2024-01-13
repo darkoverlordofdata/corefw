@@ -29,12 +29,12 @@
 
 #include "class.h"
 
-typedef struct CFWFile CFWFile;
+typedef struct __CFFile* CFFileRef;
 
-extern CFWClass *cfw_file;
+extern CFClassRef CFFile;
 
-extern CFWFile *cfw_stdin;
-extern CFWFile *cfw_stdout;
-extern CFWFile *cfw_stderr;
+extern CFFileRef CFStdIn;
+extern CFFileRef CFStdOut;
+extern CFFileRef CFStdErr;
 
 #endif

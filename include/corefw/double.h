@@ -29,8 +29,8 @@
 
 #include "class.h"
 
-typedef struct CFWDouble CFWDouble;
-extern CFWClass *cfw_double;
-extern double cfw_double_value(CFWDouble*);
+typedef struct __CFDouble* CFDoubleRef;
+extern CFClassRef CFDouble;
+extern double CFDoubleValue(CFDoubleRef);
 
 #endif

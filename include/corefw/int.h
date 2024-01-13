@@ -29,8 +29,8 @@
 
 #include "class.h"
 
-typedef struct CFWInt CFWInt;
-extern CFWClass *cfw_int;
-extern intmax_t cfw_int_value(CFWInt*);
+typedef struct __CFInt* CFIntRef;
+extern CFClassRef CFInt;
+extern intmax_t CFIntValue(CFIntRef);
 
 #endif

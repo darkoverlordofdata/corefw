@@ -29,22 +29,22 @@
 
 #include "class.h"
 
-typedef struct CFWMap CFWMap;
+typedef struct __CFMap* CFMapRef;
 
-typedef struct cfw_map_iter_t {
+typedef struct CFMapIter_t {
 	void *key, *obj;
 	/* private */
-	CFWMap *_map;
+	CFMapRef _map;
 	uint32_t _pos;
-} cfw_map_iter_t;
+} CFMapIter_t;
 
-extern CFWClass *cfw_map;
-extern size_t cfw_map_size(CFWMap*);
-extern void* cfw_map_get(CFWMap*, void*);
-extern void* cfw_map_get_c(CFWMap*, const char*);
-extern bool cfw_map_set(CFWMap*, void*, void*);
-extern bool cfw_map_set_c(CFWMap*, const char*, void*);
-extern void cfw_map_iter(CFWMap*, cfw_map_iter_t*);
-extern void cfw_map_iter_next(cfw_map_iter_t*);
+extern CFClassRef CFMap;
+extern size_t CFMapSize(CFMapRef);
+extern void* CFMapGet(CFMapRef, void*);
+extern void* CFMapGetC(CFMapRef, const char*);
+extern bool CFMapSet(CFMapRef, void*, void*);
+extern bool CFMapSetC(CFMapRef, const char*, void*);
+extern void CFMapIter(CFMapRef, CFMapIter_t*);
+extern void CFMapIterNext(CFMapIter_t*);
 
 #endif

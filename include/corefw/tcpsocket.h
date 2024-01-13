@@ -27,9 +27,11 @@
 #ifndef __COREFW_TCPSOCKET_H__
 #define __COREFW_TCPSOCKET_H__
 
-typedef struct CFWTCPSocket CFWTCPSocket;
+#include "class.h"
 
-extern CFWClass *cfw_tcpsocket;
-extern bool cfw_tcpsocket_connect(CFWTCPSocket*, const char*, uint16_t);
+typedef struct __CFTCPSocket* CFTCPSocketRef;
+
+extern CFClassRef CFTCPSocket;
+extern bool CFTCPsocketConnect(CFTCPSocketRef, const char*, uint16_t);
 
 #endif

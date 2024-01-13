@@ -29,8 +29,8 @@
 
 #include "class.h"
 
-typedef struct CFWBool CFWBool;
-extern CFWClass *cfw_bool;
-extern bool cfw_bool_value(CFWBool*);
+typedef struct __CFBool* CFBoolRef;
+extern CFClassRef CFBool;
+extern bool CFBoolValue(CFBoolRef);
 
 #endif

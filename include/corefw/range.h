@@ -26,13 +26,14 @@
 
 #ifndef __COREFW_RANGE_H__
 #define __COREFW_RANGE_H__
+#include <stddef.h>
 
-typedef struct cfw_range_t {
+typedef struct CFRange_t {
 	size_t start;
 	size_t length;
-} cfw_range_t;
+} CFRange_t;
 
-extern cfw_range_t cfw_range_all;
-extern cfw_range_t cfw_range(size_t, size_t);
+extern CFRange_t CFRangeAll;
+extern CFRange_t CFRange(size_t, size_t);
 
 #endif

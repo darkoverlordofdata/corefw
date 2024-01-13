@@ -33,19 +33,21 @@
 #include "array.h"
 #include "string.h"
 
-struct CFWRefPool {
-	CFWObject obj;
+
+
+struct __CFRefPool {
+	struct __CFObject obj;
 	void **data;
 	size_t size;
-	CFWRefPool *prev, *next;
+	CFRefPoolRef prev, next;
 };
 
-static CFWRefPool *top;
+static CFRefPoolRef top;
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWRefPool *pool = ptr;
+	CFRefPoolRef pool = ptr;
 
 	pool->data = NULL;
 	pool->size = 0;
@@ -65,14 +67,14 @@ ctor(void *ptr, va_list args)
 static void
 dtor(void *ptr)
 {
-	CFWRefPool *pool = ptr;
+	CFRefPoolRef pool = ptr;
 	size_t i;
 
 	if (pool->next != NULL)
-		cfw_unref(pool->next);
+		CFUnref(pool->next);
 
 	for (i = 0; i < pool->size; i++)
-		cfw_unref(pool->data[i]);
+		CFUnref(pool->data[i]);
 
 	if (pool->data != NULL)
 		free(pool->data);
@@ -83,24 +85,24 @@ dtor(void *ptr)
 		top->next = NULL;
 }
 
-static CFWString*
+static CFStringRef
 toString(void *ptr)
 {
-	CFWObject *this = ptr;
+	CFObjectRef this = ptr;
 	uint32_t h = this->cls->hash(ptr);
 
-   	int len = snprintf(NULL, 0, "CFWArray: %u", h);
+   	int len = snprintf(NULL, 0, "CFArray: %u", h);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%u", h);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
 bool
-cfw_refpool_add(void *ptr)
+CFRefpoolAdd(void *ptr)
 {
 	void **ndata;
 
@@ -121,11 +123,11 @@ cfw_refpool_add(void *ptr)
 	return true;
 }
 
-static CFWClass class = {
-	.name = "CFWRefPool",
-	.size = sizeof(CFWRefPool),
+static struct __CFClass class = {
+	.name = "CFRefPool",
+	.size = sizeof(struct __CFRefPool),
 	.ctor = ctor,
 	.dtor = dtor,
 	.toString = toString
 };
-CFWClass *cfw_refpool = &class;
+CFClassRef CFRefPool = &class;

@@ -8,7 +8,7 @@ dictionaries.
 
 ### based on midars original code - 
 * repackaged with CMake for robust build
-* added toString to CFWObject
+* added toString to CFObject
 
 ## install
 sudo cmake --install build --prefix "/usr/local"

@@ -29,9 +29,9 @@
 
 #include "class.h"
 
-typedef struct CFWBox CFWBox;
-extern CFWClass *cfw_box;
-extern void* cfw_box_ptr(CFWBox*);
-extern uint32_t cfw_box_type(CFWBox*);
+typedef struct __CFBox* CFBoxRef;
+extern CFClassRef CFBox;
+extern void* CFBoxPtr(CFBoxRef);
+extern uint32_t CFBoxType(CFBoxRef);
 
 #endif

@@ -31,15 +31,15 @@
 #include "double.h"
 #include "string.h"
 
-struct CFWDouble {
-	CFWObject obj;
+struct __CFDouble {
+	struct __CFObject obj;
 	double value;
 };
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFWDouble *double_ = ptr;
+	CFDoubleRef double_ = ptr;
 
 	double_->value = va_arg(args, double);
 
@@ -49,10 +49,10 @@ ctor(void *ptr, va_list args)
 static bool
 equal(void *ptr1, void *ptr2)
 {
-	CFWObject *obj2 = ptr2;
-	CFWDouble *double1, *double2;
+	CFObjectRef obj2 = ptr2;
+	CFDoubleRef double1, double2;
 
-	if (obj2->cls != cfw_double)
+	if (obj2->cls != CFDouble)
 		return false;
 
 	double1 = ptr1;
@@ -64,7 +64,7 @@ equal(void *ptr1, void *ptr2)
 static uint32_t
 hash(void *ptr)
 {
-	CFWDouble *double_ = ptr;
+	CFDoubleRef double_ = ptr;
 
 	/* FIXME: Create a proper hash! */
 	return (uint32_t)double_->value;
@@ -73,19 +73,19 @@ hash(void *ptr)
 static void*
 copy(void *ptr)
 {
-	return cfw_ref(ptr);
+	return CFRef(ptr);
 }
 
-static CFWString*
+static CFStringRef
 toString(void* ptr)
 {
- 	CFWDouble *double_ = ptr;
+ 	CFDoubleRef double_ = ptr;
 	
    	int len = snprintf(NULL, 0, "%f", double_->value);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
 	snprintf(s, len, "%f", double_->value);
-    CFWString *str = cfw_create(cfw_string, s);
+    CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
@@ -93,18 +93,18 @@ toString(void* ptr)
 
 
 double
-cfw_double_value(CFWDouble *double_)
+CFDoubleValue(CFDoubleRef double_)
 {
 	return double_->value;
 }
 
-static CFWClass class = {
-	.name = "CFWDouble",
-	.size = sizeof(CFWDouble),
+static struct __CFClass class = {
+	.name = "CFDouble",
+	.size = sizeof(struct __CFDouble),
 	.ctor = ctor,
 	.equal = equal,
 	.hash = hash,
 	.copy = copy,
 	.toString = toString
 };
-CFWClass *cfw_double = &class;
+CFClassRef CFDouble = &class;

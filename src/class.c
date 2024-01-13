@@ -26,8 +26,9 @@
 
 #include "class.h"
 
+
 const char*
-cfw_class_name(CFWClass *cls)
+CFClassName(CFClassRef cls)
 {
 	return cls->name;
 }

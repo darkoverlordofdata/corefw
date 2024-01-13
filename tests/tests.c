@@ -28,38 +28,38 @@
 #include <stdio.h>
 #include <corefw.h>
 
-#define CFW_ENDOFLIST NULL
-#define CFW_REMOVE NULL
+#define CF_ENDOFLIST NULL
+#define CF_REMOVE NULL
 
-static inline void* cfw_create_bool(int value) {
-	return cfw_create(cfw_bool, value);
+static inline void* CFBoolCreate(int value) {
+	return CFCreate(CFBool, value);
 }
-static inline void* cfw_create_double(double value) {
-	return cfw_create(cfw_double, value);
+static inline void* CFDoubleCreate(double value) {
+	return CFCreate(CFDouble, value);
 }
-static inline void* cfw_create_int(int64_t value) {
-	return cfw_create(cfw_int, value);
+static inline void* CFIntCreate(int64_t value) {
+	return CFCreate(CFInt, value);
 }
-static inline void* cfw_create_string(const char* value) {
-	return cfw_create(cfw_string, value);
+static inline void* CFStringCreate(const char* value) {
+	return CFCreate(CFString, value);
 }
 
 
 static void
-print_map(CFWMap *map)
+print_map(CFMapRef map)
 {
-	cfw_map_iter_t iter;
+	CFMapIter_t iter;
 
-	cfw_map_iter(map, &iter);
+	CFMapIter(map, &iter);
 
 	fputs("{\n", stdout);
 
-	CFWString *str;
+	CFStringRef str;
 	while (iter.key != NULL) {
-		str = cfw_toString(iter.obj);
-		printf("\t%s = %s\n", cfw_string_c(iter.key), cfw_string_c(str));
+		str = CFToString(iter.obj);
+		printf("\t%s = %s\n", CFStringC(iter.key), CFStringC(str));
 
-		cfw_map_iter_next(&iter);
+		CFMapIterNext(&iter);
 	}
 
 	fputs("}\n", stdout);
@@ -68,44 +68,44 @@ print_map(CFWMap *map)
 int
 main(int argc, char *argv[])
 {
-	CFWRefPool *pool = cfw_new(cfw_refpool);
+	CFRefPoolRef pool = CFNew(CFRefPool);
 
-	CFWArray *array = cfw_create(cfw_array,
-	    cfw_create_string("Hallo"),
-	    cfw_create_string("Welt"),
-	    cfw_create_string("!"),
-		CFW_ENDOFLIST);
+	CFArrayRef array = CFCreate(CFArray,
+	    CFStringCreate("Hallo"),
+	    CFStringCreate("Welt"),
+	    CFStringCreate("!"),
+		CF_ENDOFLIST);
 
-	CFWString *str = cfw_new(cfw_string, (void*)NULL);
+	CFStringRef str = CFNew(CFString, (void*)NULL);
 
-	for (int i = 0; i < cfw_array_size(array); i++) {
-		cfw_string_append(str, cfw_array_get(array, i));
+	for (int i = 0; i < CFArraySize(array); i++) {
+		CFStringAppend(str, CFArrayGet(array, i));
 	}
 
-	puts(cfw_string_c(str));
+	puts(CFStringC(str));
 
-	CFWString *str2 = cfw_create_string("ll");
-	printf("%zd\n", cfw_string_find(str, str2, cfw_range_all));
+	CFStringRef str2 = CFStringCreate("ll");
+	printf("%zd\n", CFStringFind(str, str2, CFRangeAll));
 
-	cfw_unref(str);
+	CFUnref(str);
 
-	CFWMap *map = cfw_create(cfw_map,
-	    cfw_create_string("Hallo"),		cfw_create_string("Welt!"),
-	    cfw_create_string("int"), 		cfw_create_int(1234), 
-	    cfw_create_string("double"),	cfw_create_double(3.1415), 
-	    cfw_create_string("Test"),		cfw_create_string("success!"),
-		CFW_ENDOFLIST);
-
-	print_map(map);
-
-	cfw_map_set(map, cfw_create_string("Hallo"), cfw_create_string("Test"));
+	CFMapRef map = CFCreate(CFMap,
+	    CFStringCreate("Hallo"),		CFStringCreate("Welt!"),
+	    CFStringCreate("int"), 		CFIntCreate(1234), 
+	    CFStringCreate("double"),		CFDoubleCreate(3.1415), 
+	    CFStringCreate("Test"),		CFStringCreate("success!"),
+		CF_ENDOFLIST);
 
 	print_map(map);
 
-	cfw_map_set(map, cfw_create_string("Hallo"), CFW_REMOVE);
+	CFMapSet(map, CFStringCreate("Hallo"), CFStringCreate("Test"));
+
 	print_map(map);
 
-	cfw_unref(pool);
+	CFMapSet(map, CFStringCreate("Hallo"), CF_REMOVE);
+	print_map(map);
+
+	CFUnref(pool);
 
 	return 0;
 }
