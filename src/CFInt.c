@@ -23,111 +23,89 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 
-#include "object.h"
-#include "refpool.h"
-#include "array.h"
-#include "string.h"
+#include "CFObject.h"
+#include "CFInt.h"
+#include "CFRefPool.h"
+#include "CFString.h"
 
-
-
-struct __CFRefPool {
+struct __CFInt {
 	struct __CFObject obj;
-	void **data;
-	size_t size;
-	CFRefPoolRef prev, next;
+	intmax_t value;
 };
-
-static CFRefPoolRef top;
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFRefPoolRef pool = ptr;
+	CFIntRef integer = ptr;
 
-	pool->data = NULL;
-	pool->size = 0;
-
-	if (top != NULL) {
-		pool->prev = top;
-		top->next = pool;
-	} else
-		pool->prev = NULL;
-	pool->next = NULL;
-
-	top = pool;
+	integer->value = va_arg(args, intmax_t);
 
 	return true;
 }
 
-static void
-dtor(void *ptr)
+static bool
+equal(void *ptr1, void *ptr2)
 {
-	CFRefPoolRef pool = ptr;
-	size_t i;
+	CFObjectRef obj2 = ptr2;
+	CFIntRef int1, int2;
 
-	if (pool->next != NULL)
-		CFUnref(pool->next);
+	if (obj2->cls != CFInt)
+		return false;
 
-	for (i = 0; i < pool->size; i++)
-		CFUnref(pool->data[i]);
+	int1 = ptr1;
+	int2 = ptr2;
 
-	if (pool->data != NULL)
-		free(pool->data);
-
-	top = pool->prev;
-
-	if (top != NULL)
-		top->next = NULL;
+	return (int1->value == int2->value);
 }
 
-static CFStringRef
-toString(void *ptr)
+static uint32_t
+hash(void *ptr)
 {
-	CFObjectRef this = ptr;
-	uint32_t h = this->cls->hash(ptr);
+	CFIntRef integer = ptr;
 
-   	int len = snprintf(NULL, 0, "CFArray: %u", h);
+	return (uint32_t)integer->value;
+}
+
+static void*
+copy(void *ptr)
+{
+	return CFRef(ptr);
+}
+
+
+static CFStringRef
+toString(void* ptr)
+{
+ 	CFIntRef integer = ptr;
+	
+   	int len = snprintf(NULL, 0, "%jd", integer->value);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
-	snprintf(s, len, "%u", h);
+	snprintf(s, len, "%jd", integer->value);
     CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
 	
 }
 
-bool
-CFRefpoolAdd(void *ptr)
+intmax_t
+CFInt_value(CFIntRef integer)
 {
-	void **ndata;
-
-	assert(top != NULL);
-
-	if (top->data != NULL)
-		ndata = realloc(top->data, (top->size + 1) * sizeof(void*));
-	else
-		ndata = malloc((top->size + 1) * sizeof(void*));
-
-	if (ndata == NULL)
-		return false;
-
-	ndata[top->size++] = ptr;
-
-	top->data = ndata;
-
-	return true;
+	return integer->value;
 }
 
 static struct __CFClass class = {
-	.name = "CFRefPool",
-	.size = sizeof(struct __CFRefPool),
+	.name = "CFInt",
+	.size = sizeof(struct __CFInt),
 	.ctor = ctor,
-	.dtor = dtor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy,
 	.toString = toString
 };
-CFClassRef CFRefPool = &class;
+CFClassRef CFInt = &class;
+

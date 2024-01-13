@@ -24,75 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
+#ifndef __COREFW_OBJECT_H__
+#define __COREFW_OBJECT_H__
 
-#include "object.h"
-#include "box.h"
-#include "string.h"
+#include "CFClass.h"
 
-struct __CFBox {
-	struct __CFObject obj;
-	void *ptr;
-	uint32_t type;
-	bool free;
+typedef struct __CFObject* CFObjectRef;
+struct __CFObject {
+	CFClassRef cls;
+	int ref_cnt;
 };
 
-static bool
-ctor(void *ptr, va_list args)
-{
-	CFBoxRef box = ptr;
-
-	box->ptr = va_arg(args, void*);
-	box->type = va_arg(args, uint32_t);
-	box->free = va_arg(args, int);
-
-	return true;
-}
-
-static void
-dtor(void *ptr)
-{
-	CFBoxRef box = ptr;
-
-	if (box->free)
-		free(box->ptr);
-}
-
-static CFStringRef
-toString(void *ptr)
-{
-	uint32_t h = CFHash(ptr);
-
-   	int len = snprintf(NULL, 0, "Box: %u", h);
-    char *s = malloc(len+1);
-    if (s == NULL) return NULL;
-	snprintf(s, len, "%u", h);
-    CFStringRef str = CFCreate(CFString, s);
-    free(s);
-    return str;
-	
-}
+extern CFClassRef CFObject;
+extern void* CFNew(CFClassRef, ...);
+extern void* CFCreate(CFClassRef, ...);
+extern void* CFRef(void*);
+extern void CFUnref(void*);
+extern void CFFree(void*);
+extern CFClassRef CFClass(void*);
+extern bool CFIs(void*, CFClassRef);
+extern bool CFEqual(void*, void*);
+extern uint32_t CFHash(void*);
+extern void* CFCopy(void*);
+extern CFStringRef CFToString(void *ptr);
 
 
-void*
-CFBoxPtr(CFBoxRef box)
-{
-	return box->ptr;
-}
 
-uint32_t
-CFBoxType(CFBoxRef box)
-{
-	return box->type;
-}
-
-static struct __CFClass class = {
-	.name = "CFBox",
-	.size = sizeof(struct __CFBox),
-	.ctor = ctor,
-	.dtor = dtor,
-	.toString = toString
-};
-CFClassRef CFBox = &class;
+#endif

@@ -28,10 +28,10 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "object.h"
-#include "map.h"
-#include "hash.h"
-#include "string.h"
+#include "CFObject.h"
+#include "CFMap.h"
+#include "CFHash.h"
+#include "CFString.h"
 
 static struct bucket {
 	CFObjectRef key, obj;

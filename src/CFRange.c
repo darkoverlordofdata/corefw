@@ -24,14 +24,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_BOX_H__
-#define __COREFW_BOX_H__
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
-#include "class.h"
+#include "CFRange.h"
+#include "CFString.h"
 
-typedef struct __CFBox* CFBoxRef;
-extern CFClassRef CFBox;
-extern void* CFBoxPtr(CFBoxRef);
-extern uint32_t CFBoxType(CFBoxRef);
 
-#endif
+CFRange_t CFRangeAll = { 0, SIZE_MAX };
+
+CFRange_t
+CFRange(size_t start, size_t length)
+{
+	CFRange_t range = { start, length };
+
+	return range;
+}

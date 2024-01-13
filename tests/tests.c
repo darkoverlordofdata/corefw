@@ -24,25 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "object.h"
 #include <stdio.h>
-#include <corefw.h>
+#include <corefw/corefw.h>
 
 #define CF_ENDOFLIST NULL
 #define CF_REMOVE NULL
 
-static inline void* CFBoolCreate(int value) {
-	return CFCreate(CFBool, value);
-}
-static inline void* CFDoubleCreate(double value) {
-	return CFCreate(CFDouble, value);
-}
-static inline void* CFIntCreate(int64_t value) {
-	return CFCreate(CFInt, value);
-}
-static inline void* CFStringCreate(const char* value) {
-	return CFCreate(CFString, value);
-}
 
 
 static void
@@ -68,7 +55,7 @@ print_map(CFMapRef map)
 int
 main(int argc, char *argv[])
 {
-	CFRefPoolRef pool = CFNew(CFRefPool);
+	CFRefPoolRef pool = CFRefPoolNew();
 
 	CFArrayRef array = CFCreate(CFArray,
 	    CFStringCreate("Hallo"),
@@ -76,7 +63,7 @@ main(int argc, char *argv[])
 	    CFStringCreate("!"),
 		CF_ENDOFLIST);
 
-	CFStringRef str = CFNew(CFString, (void*)NULL);
+	CFStringRef str = CFStringNew((void*)NULL);
 
 	for (int i = 0; i < CFArraySize(array); i++) {
 		CFStringAppend(str, CFArrayGet(array, i));
@@ -91,9 +78,9 @@ main(int argc, char *argv[])
 
 	CFMapRef map = CFCreate(CFMap,
 	    CFStringCreate("Hallo"),		CFStringCreate("Welt!"),
-	    CFStringCreate("int"), 		CFIntCreate(1234), 
+	    CFStringCreate("int"), 			CFIntCreate(1234), 
 	    CFStringCreate("double"),		CFDoubleCreate(3.1415), 
-	    CFStringCreate("Test"),		CFStringCreate("success!"),
+	    CFStringCreate("Test"),			CFStringCreate("success!"),
 		CF_ENDOFLIST);
 
 	print_map(map);

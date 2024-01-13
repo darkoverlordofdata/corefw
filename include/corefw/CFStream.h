@@ -29,9 +29,9 @@
 
 #include <unistd.h>
 
-#include "class.h"
-#include "object.h"
-#include "string.h"
+#include "CFClass.h"
+#include "CFObject.h"
+#include "CFString.h"
 
 struct CFStreamOps {
 	ssize_t (*read)(void*, void*, size_t);

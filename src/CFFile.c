@@ -36,9 +36,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "stream.h"
-#include "file.h"
-#include "string.h"
+#include "CFStream.h"
+#include "CFFile.h"
+#include "CFString.h"
 
 #ifndef O_BINARY
 # define O_BINARY 0

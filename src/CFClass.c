@@ -24,13 +24,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_INT_H__
-#define __COREFW_INT_H__
+#include "CFClass.h"
 
-#include "class.h"
 
-typedef struct __CFInt* CFIntRef;
-extern CFClassRef CFInt;
-extern intmax_t CFIntValue(CFIntRef);
-
-#endif
+const char*
+CFClassName(CFClassRef cls)
+{
+	return cls->name;
+}

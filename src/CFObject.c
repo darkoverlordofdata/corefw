@@ -28,9 +28,9 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "object.h"
-#include "refpool.h"
-#include "string.h"
+#include "CFObject.h"
+#include "CFRefPool.h"
+#include "CFString.h"
 
 void*
 CFNew(CFClassRef class, ...)

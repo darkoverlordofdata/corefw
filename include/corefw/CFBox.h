@@ -24,11 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "class.h"
+#ifndef __COREFW_BOX_H__
+#define __COREFW_BOX_H__
 
+#include "CFClass.h"
 
-const char*
-CFClassName(CFClassRef cls)
-{
-	return cls->name;
-}
+typedef struct __CFBox* CFBoxRef;
+extern CFClassRef CFBox;
+extern void* CFBoxPtr(CFBoxRef);
+extern uint32_t CFBoxType(CFBoxRef);
+
+#endif

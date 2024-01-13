@@ -23,14 +23,88 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
-#ifndef __COREFW_DOUBLE_H__
-#define __COREFW_DOUBLE_H__
+#include "CFObject.h"
+#include "CFDouble.h"
+#include "CFString.h"
 
-#include "class.h"
+struct __CFDouble {
+	struct __CFObject obj;
+	double value;
+};
 
-typedef struct __CFDouble* CFDoubleRef;
-extern CFClassRef CFDouble;
-extern double CFDoubleValue(CFDoubleRef);
+static bool
+ctor(void *ptr, va_list args)
+{
+	CFDoubleRef double_ = ptr;
 
-#endif
+	double_->value = va_arg(args, double);
+
+	return true;
+}
+
+static bool
+equal(void *ptr1, void *ptr2)
+{
+	CFObjectRef obj2 = ptr2;
+	CFDoubleRef double1, double2;
+
+	if (obj2->cls != CFDouble)
+		return false;
+
+	double1 = ptr1;
+	double2 = ptr2;
+
+	return (double1->value == double2->value);
+}
+
+static uint32_t
+hash(void *ptr)
+{
+	CFDoubleRef double_ = ptr;
+
+	/* FIXME: Create a proper hash! */
+	return (uint32_t)double_->value;
+}
+
+static void*
+copy(void *ptr)
+{
+	return CFRef(ptr);
+}
+
+static CFStringRef
+toString(void* ptr)
+{
+ 	CFDoubleRef double_ = ptr;
+	
+   	int len = snprintf(NULL, 0, "%f", double_->value);
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+	snprintf(s, len, "%f", double_->value);
+    CFStringRef str = CFCreate(CFString, s);
+    free(s);
+    return str;
+	
+}
+
+
+double
+CFDoubleValue(CFDoubleRef double_)
+{
+	return double_->value;
+}
+
+static struct __CFClass class = {
+	.name = "CFDouble",
+	.size = sizeof(struct __CFDouble),
+	.ctor = ctor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy,
+	.toString = toString
+};
+CFClassRef CFDouble = &class;

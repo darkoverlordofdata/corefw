@@ -24,27 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_MAP_H__
-#define __COREFW_MAP_H__
+#ifndef __COREFW_FILE_H__
+#define __COREFW_FILE_H__
 
-#include "class.h"
+#include "CFClass.h"
 
-typedef struct __CFMap* CFMapRef;
+typedef struct __CFFile* CFFileRef;
 
-typedef struct CFMapIter_t {
-	void *key, *obj;
-	/* private */
-	CFMapRef _map;
-	uint32_t _pos;
-} CFMapIter_t;
+extern CFClassRef CFFile;
 
-extern CFClassRef CFMap;
-extern size_t CFMapSize(CFMapRef);
-extern void* CFMapGet(CFMapRef, void*);
-extern void* CFMapGetC(CFMapRef, const char*);
-extern bool CFMapSet(CFMapRef, void*, void*);
-extern bool CFMapSetC(CFMapRef, const char*, void*);
-extern void CFMapIter(CFMapRef, CFMapIter_t*);
-extern void CFMapIterNext(CFMapIter_t*);
+extern CFFileRef CFStdIn;
+extern CFFileRef CFStdOut;
+extern CFFileRef CFStdErr;
 
 #endif

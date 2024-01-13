@@ -24,15 +24,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_REFPOOL_H__
-#define __COREFW_REFPOOL_H__
+#ifndef __COREFW_DOUBLE_H__
+#define __COREFW_DOUBLE_H__
 
-#include "class.h"
+#include "CFClass.h"
+#include "CFObject.h"
 
-typedef struct __CFRefPool* CFRefPoolRef;
-extern CFClassRef CFRefPool;
-extern bool CFRefpoolAdd(void*);
+typedef struct __CFDouble* CFDoubleRef;
+extern CFClassRef CFDouble;
+extern double CFDoubleValue(CFDoubleRef);
 
+static inline CFDoubleRef CFDoubleNew(double value) {
+	return CFNew(CFDouble, value);
+}
 
+static inline CFDoubleRef CFDoubleCreate(double value) {
+	return CFCreate(CFDouble, value);
+}
 
 #endif

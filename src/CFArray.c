@@ -29,10 +29,10 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "object.h"
-#include "array.h"
-#include "hash.h"
-#include "string.h"
+#include "CFObject.h"
+#include "CFArray.h"
+#include "CFHash.h"
+#include "CFString.h"
 
 struct __CFArray {
 	struct __CFObject obj;

@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "stream.h"
+#include "CFStream.h"
 
 #define BUFFER_SIZE 4096
 

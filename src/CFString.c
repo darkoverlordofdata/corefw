@@ -29,9 +29,9 @@
 #include <string.h>
 #include <errno.h>
 
-#include "object.h"
-#include "string.h"
-#include "hash.h"
+#include "CFObject.h"
+#include "CFString.h"
+#include "CFHash.h"
 
 size_t strlen(const char *str);
 void * memcpy ( void * destination, const void * source, size_t num );

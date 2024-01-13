@@ -24,22 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_ARRAY_H__
-#define __COREFW_ARRAY_H__
+#ifndef __COREFW_TCPSOCKET_H__
+#define __COREFW_TCPSOCKET_H__
 
-#include "class.h"
+#include "CFClass.h"
 
-typedef struct __CFArray* CFArrayRef;
-extern CFClassRef CFArray;
-extern size_t CFArraySize(CFArrayRef);
-extern void* CFArrayGet(CFArrayRef, size_t);
-extern bool CFArraySet(CFArrayRef, size_t, void*);
-extern bool CFArrayPush(CFArrayRef, void*);
-extern void* CFArrayLast(CFArrayRef);
-extern bool CFArrayPop(CFArrayRef);
-extern bool CFArrayContains(CFArrayRef, void*);
-extern bool CFArrayContainsPtr(CFArrayRef, void*);
-extern size_t CFArrayFind(CFArrayRef, void*);
-extern size_t CFArrayFindPtr(CFArrayRef, void*);
+typedef struct __CFTCPSocket* CFTCPSocketRef;
+
+extern CFClassRef CFTCPSocket;
+extern bool CFTCPsocketConnect(CFTCPSocketRef, const char*, uint16_t);
 
 #endif

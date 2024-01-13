@@ -23,90 +23,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
 
-#include "object.h"
-#include "int.h"
-#include "refpool.h"
-#include "string.h"
+#ifndef __COREFW_BOOL_H__
+#define __COREFW_BOOL_H__
 
-struct __CFInt {
-	struct __CFObject obj;
-	intmax_t value;
-};
+#include "CFClass.h"
 
-static bool
-ctor(void *ptr, va_list args)
-{
-	CFIntRef integer = ptr;
+typedef struct __CFBool* CFBoolRef;
+extern CFClassRef CFBool;
+extern bool CFBoolValue(CFBoolRef);
 
-	integer->value = va_arg(args, intmax_t);
-
-	return true;
+static inline CFBoolRef CFBoolNew(int value) {
+	return CFNew(CFBool, value);
 }
 
-static bool
-equal(void *ptr1, void *ptr2)
-{
-	CFObjectRef obj2 = ptr2;
-	CFIntRef int1, int2;
-
-	if (obj2->cls != CFInt)
-		return false;
-
-	int1 = ptr1;
-	int2 = ptr2;
-
-	return (int1->value == int2->value);
+static inline CFBoolRef CFBoolCreate(int value) {
+	return CFCreate(CFBool, value);
 }
 
-static uint32_t
-hash(void *ptr)
-{
-	CFIntRef integer = ptr;
-
-	return (uint32_t)integer->value;
-}
-
-static void*
-copy(void *ptr)
-{
-	return CFRef(ptr);
-}
-
-
-static CFStringRef
-toString(void* ptr)
-{
- 	CFIntRef integer = ptr;
-	
-   	int len = snprintf(NULL, 0, "%jd", integer->value);
-    char *s = malloc(len+1);
-    if (s == NULL) return NULL;
-	snprintf(s, len, "%jd", integer->value);
-    CFStringRef str = CFCreate(CFString, s);
-    free(s);
-    return str;
-	
-}
-
-intmax_t
-CFInt_value(CFIntRef integer)
-{
-	return integer->value;
-}
-
-static struct __CFClass class = {
-	.name = "CFInt",
-	.size = sizeof(struct __CFInt),
-	.ctor = ctor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy,
-	.toString = toString
-};
-CFClassRef CFInt = &class;
-
-
+#endif

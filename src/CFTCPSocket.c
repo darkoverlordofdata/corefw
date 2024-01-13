@@ -39,8 +39,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include "stream.h"
-#include "tcpsocket.h"
+#include "CFStream.h"
+#include "CFTCPSocket.h"
 
 #ifndef sprintf
 int snprintf(char *buf, size_t size, const char *fmt, ...);

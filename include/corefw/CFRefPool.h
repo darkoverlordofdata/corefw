@@ -23,86 +23,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
 
-#include "object.h"
-#include "bool.h"
-#include "string.h"
+#ifndef __COREFW_REFPOOL_H__
+#define __COREFW_REFPOOL_H__
 
-struct __CFBool {
-	struct __CFObject obj;
-	bool value;
-};
+#include "CFClass.h"
 
-static bool
-ctor(void *ptr, va_list args)
-{
-	CFBoolRef boolean = ptr;
+typedef struct __CFRefPool* CFRefPoolRef;
+extern CFClassRef CFRefPool;
+extern bool CFRefpoolAdd(void*);
 
-	boolean->value = va_arg(args, int);
-
-	return true;
+static inline CFRefPoolRef CFRefPoolNew() {
+	return CFNew(CFRefPool);
 }
 
-static bool
-equal(void *ptr1, void *ptr2)
-{
-	CFObjectRef obj2 = ptr2;
-	CFBoolRef boolean1, boolean2;
 
-	if (obj2->cls != CFBool)
-		return false;
-
-	boolean1 = ptr1;
-	boolean2 = ptr2;
-
-	return (boolean1->value == boolean2->value);
-}
-
-static uint32_t
-hash(void *ptr)
-{
-	CFBoolRef boolean = ptr;
-
-	return (uint32_t)boolean->value;
-}
-
-static void*
-copy(void *ptr)
-{
-	return CFRef(ptr);
-}
-
-static CFStringRef
-toString(void* ptr)
-{
- 	CFBoolRef boolean = ptr;
-	
-   	int len = snprintf(NULL, 0, "%s", boolean->value ? "true": "false");
-    char *s = malloc(len+1);
-    if (s == NULL) return NULL;
-	snprintf(s, len, "%s", boolean->value ? "true": "false");
-    CFStringRef str = CFCreate(CFString, s);
-    free(s);
-    return str;
-	
-}
-
-bool
-CFBoolValue(CFBoolRef boolean)
-{
-	return boolean->value;
-}
-
-static struct __CFClass class = {
-	.name = "CFBool",
-	.size = sizeof(struct __CFBool),
-	.ctor = ctor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy,
-	.toString = toString
-};
-CFClassRef CFBool = &class;
+#endif

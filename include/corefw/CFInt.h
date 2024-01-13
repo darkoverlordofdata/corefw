@@ -24,31 +24,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_STRING_H__
-#define __COREFW_STRING_H__
+#ifndef __COREFW_INT_H__
+#define __COREFW_INT_H__
 
-#include "class.h"
-#include "range.h"
+#include "CFClass.h"
 
-typedef struct __CFRefPool* CFRefPoolRef;
+typedef struct __CFInt* CFIntRef;
+extern CFClassRef CFInt;
+extern intmax_t CFIntValue(CFIntRef);
 
-typedef struct __CFString* CFStringRef;
+static inline CFIntRef CFIntNew(int64_t value) {
+	return CFNew(CFInt, value);
+}
 
-extern CFClassRef CFString;
-extern size_t CFStrnlen(const char*, size_t);
-extern char* CFStrdup(const char*);
-extern char* CFStrndup(const char*, size_t);
-extern char* CFStringC(CFStringRef);
-extern size_t CFStringLength(CFStringRef);
-extern bool CFStringSet(CFStringRef, const char*);
-extern void CFStringSetNocopy(CFStringRef, char*, size_t);
-extern bool CFStringAppend(CFStringRef, CFStringRef);
-extern bool CFStringAppendC(CFStringRef, const char*);
-extern bool CFStringHasPrefix(CFStringRef, CFStringRef);
-extern bool CFStringHasPrefixC(CFStringRef, const char*);
-extern bool CFStringHasSuffix(CFStringRef, CFStringRef);
-extern bool CFStringHasSuffixC(CFStringRef, const char*);
-extern size_t CFStringFind(CFStringRef, CFStringRef, CFRange_t);
-extern size_t CFStringFindC(CFStringRef, const char*, CFRange_t);
+static inline CFIntRef CFIntCreate(int64_t value) {
+	return CFCreate(CFInt, value);
+}
 
 #endif

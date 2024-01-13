@@ -24,30 +24,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COREFW_OBJECT_H__
-#define __COREFW_OBJECT_H__
+#ifndef __COREFW_MAP_H__
+#define __COREFW_MAP_H__
 
-#include "class.h"
+#include "CFClass.h"
 
-typedef struct __CFObject* CFObjectRef;
-struct __CFObject {
-	CFClassRef cls;
-	int ref_cnt;
-};
+typedef struct __CFMap* CFMapRef;
 
-extern CFClassRef CFObject;
-extern void* CFNew(CFClassRef, ...);
-extern void* CFCreate(CFClassRef, ...);
-extern void* CFRef(void*);
-extern void CFUnref(void*);
-extern void CFFree(void*);
-extern CFClassRef CFClass(void*);
-extern bool CFIs(void*, CFClassRef);
-extern bool CFEqual(void*, void*);
-extern uint32_t CFHash(void*);
-extern void* CFCopy(void*);
-extern CFStringRef CFToString(void *ptr);
+typedef struct CFMapIter_t {
+	void *key, *obj;
+	/* private */
+	CFMapRef _map;
+	uint32_t _pos;
+} CFMapIter_t;
 
-
+extern CFClassRef CFMap;
+extern size_t CFMapSize(CFMapRef);
+extern void* CFMapGet(CFMapRef, void*);
+extern void* CFMapGetC(CFMapRef, const char*);
+extern bool CFMapSet(CFMapRef, void*, void*);
+extern bool CFMapSetC(CFMapRef, const char*, void*);
+extern void CFMapIter(CFMapRef, CFMapIter_t*);
+extern void CFMapIterNext(CFMapIter_t*);
 
 #endif

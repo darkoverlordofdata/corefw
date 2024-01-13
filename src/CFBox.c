@@ -23,68 +23,52 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 
-#include "object.h"
-#include "double.h"
-#include "string.h"
+#include "CFObject.h"
+#include "CFBox.h"
+#include "CFString.h"
 
-struct __CFDouble {
+struct __CFBox {
 	struct __CFObject obj;
-	double value;
+	void *ptr;
+	uint32_t type;
+	bool free;
 };
 
 static bool
 ctor(void *ptr, va_list args)
 {
-	CFDoubleRef double_ = ptr;
+	CFBoxRef box = ptr;
 
-	double_->value = va_arg(args, double);
+	box->ptr = va_arg(args, void*);
+	box->type = va_arg(args, uint32_t);
+	box->free = va_arg(args, int);
 
 	return true;
 }
 
-static bool
-equal(void *ptr1, void *ptr2)
+static void
+dtor(void *ptr)
 {
-	CFObjectRef obj2 = ptr2;
-	CFDoubleRef double1, double2;
+	CFBoxRef box = ptr;
 
-	if (obj2->cls != CFDouble)
-		return false;
-
-	double1 = ptr1;
-	double2 = ptr2;
-
-	return (double1->value == double2->value);
-}
-
-static uint32_t
-hash(void *ptr)
-{
-	CFDoubleRef double_ = ptr;
-
-	/* FIXME: Create a proper hash! */
-	return (uint32_t)double_->value;
-}
-
-static void*
-copy(void *ptr)
-{
-	return CFRef(ptr);
+	if (box->free)
+		free(box->ptr);
 }
 
 static CFStringRef
-toString(void* ptr)
+toString(void *ptr)
 {
- 	CFDoubleRef double_ = ptr;
-	
-   	int len = snprintf(NULL, 0, "%f", double_->value);
+	uint32_t h = CFHash(ptr);
+
+   	int len = snprintf(NULL, 0, "Box: %u", h);
     char *s = malloc(len+1);
     if (s == NULL) return NULL;
-	snprintf(s, len, "%f", double_->value);
+	snprintf(s, len, "%u", h);
     CFStringRef str = CFCreate(CFString, s);
     free(s);
     return str;
@@ -92,19 +76,23 @@ toString(void* ptr)
 }
 
 
-double
-CFDoubleValue(CFDoubleRef double_)
+void*
+CFBoxPtr(CFBoxRef box)
 {
-	return double_->value;
+	return box->ptr;
+}
+
+uint32_t
+CFBoxType(CFBoxRef box)
+{
+	return box->type;
 }
 
 static struct __CFClass class = {
-	.name = "CFDouble",
-	.size = sizeof(struct __CFDouble),
+	.name = "CFBox",
+	.size = sizeof(struct __CFBox),
 	.ctor = ctor,
-	.equal = equal,
-	.hash = hash,
-	.copy = copy,
+	.dtor = dtor,
 	.toString = toString
 };
-CFClassRef CFDouble = &class;
+CFClassRef CFBox = &class;
