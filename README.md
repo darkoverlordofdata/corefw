@@ -15,3 +15,9 @@ dictionaries.
 
 ## install
 sudo cmake --install build --prefix "/usr/local"
+
+
+
+-Wno-xxx
+-Wno-format-invalid-specifier
+-Wno-format-extra-args

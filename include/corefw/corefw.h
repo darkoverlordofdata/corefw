@@ -4,6 +4,7 @@
 #include "CFClass.h"
 #include "CFObject.h"
 #include "CFArray.h"
+#include "CFBitVector.h"
 #include "CFBool.h"
 #include "CFBox.h"
 #include "CFDouble.h"
@@ -16,5 +17,5 @@
 #include "CFStream.h"
 #include "CFString.h"
 #include "CFTCPSocket.h"
-
+#include "CFLog.h"
 #endif

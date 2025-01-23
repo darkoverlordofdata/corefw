@@ -33,9 +33,9 @@
 #include "CFString.h"
 #include "CFHash.h"
 
-size_t strlen(const char *str);
-void * memcpy ( void * destination, const void * source, size_t num );
-int memcmp ( const void * ptr1, const void * ptr2, size_t num );
+// size_t strlen(const char *str);
+// void * memcpy ( void * destination, const void * source, size_t num );
+// int memcmp ( const void * ptr1, const void * ptr2, size_t num );
 
 struct __CFString {
 	struct __CFObject obj;

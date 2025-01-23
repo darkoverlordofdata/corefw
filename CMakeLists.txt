@@ -7,7 +7,7 @@ if (MSVC)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_C_FLAGS "-std=c17")
+set(CMAKE_C_FLAGS "-std=c2x -Wno-format-invalid-specifier -Wno-format-extra-args")
 include_directories("${CMAKE_SOURCE_DIR}/include/corefw")
 
 add_library(corefw SHARED)

@@ -42,6 +42,34 @@
 #include "CFStream.h"
 #include "CFTCPSocket.h"
 
+#ifndef addrinfo
+struct addrinfo {
+	int              ai_flags;
+	int              ai_family;
+	int              ai_socktype;
+	int              ai_protocol;
+	socklen_t        ai_addrlen;
+	struct sockaddr *ai_addr;
+	char            *ai_canonname;
+	struct addrinfo *ai_next;
+};
+#endif
+
+#ifndef getaddrinfo
+int getaddrinfo(const char *restrict node,
+				const char *restrict service,
+				const struct addrinfo *restrict hints,
+				struct addrinfo **restrict res);
+#endif
+
+#ifndef freeaddrinfo
+void freeaddrinfo(struct addrinfo *res);
+#endif
+
+#ifndef gai_strerror
+const char *gai_strerror(int errcode);
+#endif
+
 #ifndef sprintf
 int snprintf(char *buf, size_t size, const char *fmt, ...);
 #endif

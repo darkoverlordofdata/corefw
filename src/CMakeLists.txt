@@ -1,9 +1,10 @@
 target_sources(corefw 
-    PRIVATE CFArray.c CFBool.c CFBox.c CFClass.c CFDouble.c CFFile.c CFInt.c CFMap.c CFObject.c CFRange.c CFRefPool.c CFStream.c CFString.c CFTCPSocket.c 
+    PRIVATE CFArray.c CFBitVector.c CFBool.c CFBox.c CFClass.c CFDouble.c CFFile.c CFInt.c CFMap.c CFObject.c CFRange.c CFRefPool.c CFStream.c CFString.c CFTCPSocket.c CFLog.c
     PUBLIC FILE_SET HEADERS 
     BASE_DIRS "${CMAKE_SOURCE_DIR}/include"
     FILES "${CMAKE_SOURCE_DIR}/include/corefw/corefw.h" 
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFArray.h"
+			"${CMAKE_SOURCE_DIR}/include/corefw/CFBitVector.h"
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFBool.h"
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFBox.h"
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFClass.h"
@@ -18,4 +19,5 @@ target_sources(corefw
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFStream.h"
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFString.h"
 			"${CMAKE_SOURCE_DIR}/include/corefw/CFTCPSocket.h"
+			"${CMAKE_SOURCE_DIR}/include/corefw/CFLog.h"
     )

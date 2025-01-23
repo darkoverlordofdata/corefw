@@ -24,75 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <corefw/corefw.h>
+#pragma once
+#include "CFClass.h"
 
-#define CF_ENDOFLIST NULL
-#define CF_REMOVE NULL
+typedef struct __CFBitVector* CFBitVectorRef;
+extern CFClassRef CFBitVector;
 
+extern size_t   CFBitVectorGetCount(CFBitVectorRef);
+extern bool     CFBitVectorGetBitAtIndex(CFBitVectorRef, size_t);
+extern void     CFBitVectorSetBitAtIndex(CFBitVectorRef, size_t, bool);
 
-
-static void
-print_map(CFMapRef map)
-{
-	CFMapIter_t iter;
-
-	CFMapIter(map, &iter);
-
-	CFLog("{");
-
-	CFStringRef str;
-	while (iter.key != NULL) {
-		str = CFToString(iter.obj);
-		CFLog("\t%$ = %$", iter.key, iter.obj);
-		CFMapIterNext(&iter);
-	}
-
-	CFLog("}");
-}
-
-int
-main(int argc, char *argv[])
-{
-	CFRefPoolRef pool = CFRefPoolNew();
-
-	CFArrayRef array = CFCreate(CFArray,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate("Welt"),
-	    CFStringCreate("!"),
-		CF_ENDOFLIST);
-
-	CFStringRef str = CFStringNew((void*)NULL);
-
-	for (int i = 0; i < CFArraySize(array); i++) {
-		CFStringAppend(str, CFArrayGet(array, i));
-	}
-
-	CFLog("string is %$", str);
-
-
-	CFStringRef str2 = CFStringCreate("ll");
-	CFLog("find: %zd\n", CFStringFind(str, str2, CFRangeAll));
-
-	CFUnref(str);
-
-	CFMapRef map = CFCreate(CFMap,
-	    CFStringCreate("Hallo"),		CFStringCreate("Welt!"),
-	    CFStringCreate("int"), 			CFIntCreate(1234), 
-	    CFStringCreate("double"),		CFDoubleCreate(3.1415), 
-	    CFStringCreate("Test"),			CFStringCreate("success!"),
-		CF_ENDOFLIST);
-
-	print_map(map);
-
-	CFMapSet(map, CFStringCreate("Hallo"), CFStringCreate("Test"));
-
-	print_map(map);
-
-	CFMapSet(map, CFStringCreate("Hallo"), CF_REMOVE);
-	print_map(map);
-
-	CFUnref(pool);
-
-	return 0;
-}
