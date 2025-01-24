@@ -26,12 +26,17 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
+#include <stdio.h>
+#include <limits.h>		/* for CHAR_BIT */
+#include <string.h>
 
 #include "CFObject.h"
 #include "CFBitVector.h"
 #include "CFHash.h"
-#include <limits.h>		/* for CHAR_BIT */
+#include "CFString.h"
 
+//https://c-faq.com/misc/bitsets.html
 #define BITMASK(b) (1 << ((b) % CHAR_BIT))
 #define BITSLOT(b) ((b) / CHAR_BIT)
 #define BITSET(a, b) ((a)[BITSLOT(b)] |= BITMASK(b))
@@ -56,6 +61,7 @@ ctor(void *ptr, va_list args)
 	this->length = (size_t)va_arg(args, int);
 	this->alloc = BITNSLOTS(this->length);
 	this->data = malloc(this->alloc + 1);
+	memset(this->data, 0, this->alloc);
 
 	return true;
 }
@@ -125,10 +131,38 @@ copy(void *ptr)
 	}
 	new->length = this->length;
 
+
 	for (i = 0; i < this->length; i++)
 		new->data[i] = this->data[i];
 
 	return new;
+}
+
+static CFStringRef
+toString(void *ptr)
+{
+	CFBitVectorRef this = ptr;
+	uint32_t h = CFHash(ptr);
+
+	const char * format = "CFBitVector: %$";
+	int len = 0;
+
+	for (int i=0; i<this->alloc; i++) {
+		len += snprintf(NULL, 0, "%08b\n", this->data[i]);
+	}
+
+    char *s = malloc(len+1);
+    if (s == NULL) return NULL;
+
+	int offset = 0;
+	for (int i=0; i<this->alloc; i++) {
+		offset += snprintf(s+offset, len, "%08b\n", this->data[i]);
+	}
+
+    CFStringRef str = CFCreate(CFString, s);
+    free(s);
+    return str;
+	
 }
 
 size_t
@@ -163,6 +197,7 @@ static struct __CFClass class = {
 	.dtor = dtor,
 	.equal = equal,
 	.hash = hash,
-	.copy = copy
+	.copy = copy,
+	.toString = toString
 };
 CFClassRef CFBitVector = &class;

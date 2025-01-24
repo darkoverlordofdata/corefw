@@ -35,7 +35,7 @@
  * Writes output to stderr, with end of line.
  */
 __attribute__((__format__ (__printf__, 1, 2)))
-void CFLog (char* format, ...) {
+void CFLog (const char *restrict  format, ...) {
 
     va_list args;
     va_start(args, format);

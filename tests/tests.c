@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "CFBitVector.h"
+#include "CFObject.h"
 #include <stdio.h>
 #include <corefw/corefw.h>
 
@@ -91,6 +93,22 @@ main(int argc, char *argv[])
 
 	CFMapSet(map, CFStringCreate("Hallo"), CF_REMOVE);
 	print_map(map);
+
+	CFBitVectorRef bv = CFCreate(CFBitVector, 64);
+	CFBitVectorSetBitAtIndex(bv, 1, true);
+	CFBitVectorSetBitAtIndex(bv, 3, true);
+	CFBitVectorSetBitAtIndex(bv, 10, true);
+	int c = CFBitVectorGetCount(bv);
+	CFLog("count = %d", c);
+
+	CFLog("bit 1 = %d", CFBitVectorGetBitAtIndex(bv, 1));
+	CFLog("bit 2 = %d", CFBitVectorGetBitAtIndex(bv, 2));
+	CFLog("bit 3 = %d", CFBitVectorGetBitAtIndex(bv, 3));
+
+	CFLog("%$\n", bv);
+	CFBitVectorSetBitAtIndex(bv, 3, false);
+	CFLog("%$", bv);
+
 
 	CFUnref(pool);
 

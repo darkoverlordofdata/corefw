@@ -38,8 +38,10 @@
  *'
  * %$ meta sequence support 
  */
+// __attribute__((__format__ (__printf__, 1, 2)))
+// void CFLog (char* format, ...);
 __attribute__((__format__ (__printf__, 1, 2)))
-void CFLog (char* format, ...);
+void CFLog (const char *restrict  format, ...);
 
 __attribute__((__format__ (__printf__, 1, 2)))                          
 char* CFsprintf(const char* format, ...);

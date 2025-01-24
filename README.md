@@ -8,16 +8,16 @@ dictionaries.
 
 ### based on midars original code - 
 * repackaged with CMake for robust build
-* added toString to CFObject
 * rename CFW -> CF
 * snake_case -> PascalCase
-* rename files to avoid name collision
+* rename files to avoid name collision with std, eg, string.h
+* added method toString
+* added function CFLog
+* added class CFBitVector
+
+### suitable for embedded
+tested on wasm, arm, amd64
 
 ## install
 sudo cmake --install build --prefix "/usr/local"
 
-
-
--Wno-xxx
--Wno-format-invalid-specifier
--Wno-format-extra-args
